@@ -2,7 +2,7 @@ import type { Store } from "../game/store.ts";
 import { TITLES, RARITY_LABEL, shownTitle } from "../game/titles.ts";
 import Emblem from "./Emblem.tsx";
 
-const GROUPS = [["race", "Race it"], ["steer", "Steer it"], ["break", "Break it"], ["return", "Keep coming back"]] as const;
+const GROUPS = [["race", "Race the AI"], ["steer", "Build a sentence"], ["break", "Trick the AI"], ["return", "Keep coming back"]] as const;
 
 type Props = { store: Store; onWear: (id: string) => void; onPlay: () => void };
 

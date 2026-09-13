@@ -23,7 +23,7 @@ test("the grid square covers all four outcomes", () => {
 });
 
 test("the share line says what actually happened", () => {
-  assert.equal(shareLine([grade("a", round([["b", 0.9]]), "a")]), "I beat the machine.");
+  assert.equal(shareLine([grade("a", round([["b", 0.9]]), "a")]), "I beat the AI.");
   assert.equal(shareLine([grade("x", round([["b", 0.25]]), "a")]), "It was 25% sure and wrong.");
   assert.equal(shareLine([grade("x", round([["b", 0.1]]), "a")]), "A draw. It does not get tired.");
   assert.equal(shareLine([grade("x", round([["a", 0.1]]), "a")]), "It beat me 1 to 0.");

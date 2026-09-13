@@ -49,7 +49,7 @@ export const tally = (grades: Grade[]) => ({
 /** The one line on the share card, taken from what actually happened in this game. */
 export function shareLine(grades: Grade[]): string {
   const { you, machine } = tally(grades);
-  if (you > machine) return "I beat the machine.";
+  if (you > machine) return "I beat the AI.";
   const sure = grades.filter((g) => !g.machineRight).sort((a, b) => b.machineP - a.machineP)[0];
   if (sure && sure.machineP >= 0.25) return `It was ${pct(sure.machineP)} sure and wrong.`;
   if (you === machine) return "A draw. It does not get tired.";
@@ -58,22 +58,22 @@ export function shareLine(grades: Grade[]): string {
 
 export function shareText(day: number, grades: Grade[], url: string, extra: string[] = []): string {
   const { you, machine } = tally(grades);
-  return [`Just Guessing, day ${day}`, grades.map(square).join(""), `me ${you}, machine ${machine}`, shareLine(grades), ...extra.filter(Boolean), url].join("\n");
+  return [`Just Guessing, day ${day}`, grades.map(square).join(""), `me ${you}, AI ${machine}`, shareLine(grades), ...extra.filter(Boolean), url].join("\n");
 }
 
 /** One plain sentence under each reveal, saying what the numbers just showed. */
 export function insight(g: Grade, effective: number): string {
   if (g.machineRight) {
     return g.machineP < 0.2
-      ? `It got it, with only ${pct(g.machineP)} confidence. That is normal for it.`
-      : `It got it, and it was ${pct(g.machineP)} sure.`;
+      ? `The AI got it, but it was only ${pct(g.machineP)} sure. It was mostly guessing.`
+      : `The AI got it, and it was ${pct(g.machineP)} sure.`;
   }
   const real = g.truthRank === null
-    ? `The real word was not in its top ${g.listSize}. It gave it ${pct(g.truthP)}.`
-    : `It gave the real word ${pct(g.truthP)}.`;
-  if (g.machineP >= 0.25) return `It was ${pct(g.machineP)} sure of “${g.machineWord}”. ${real}`;
-  if (g.youRight) return `You saw something it could not. ${real}`;
-  return `It was choosing between about ${effective} words. ${real}`;
+    ? "The real word was not even on its list."
+    : `It gave the real word only ${pct(g.truthP)}.`;
+  if (g.machineP >= 0.25) return `The AI was ${pct(g.machineP)} sure it was “${g.machineWord}”, and it was wrong. ${real}`;
+  if (g.youRight) return `You beat the AI on this one. ${real}`;
+  return `The AI was choosing between about ${effective} words, so it guessed. ${real}`;
 }
 
 /** The chance of a whole sentence, said plainly: 1 in 48, 1 in 2.3 million. */

@@ -1,10 +1,14 @@
 import { useEffect, useState } from "react";
 import raceData from "../data/race.json";
 import type { RaceData } from "../game/scoring.ts";
+import { grade, tally } from "../game/scoring.ts";
 import { dayNumber, sentenceIndex } from "../game/daily.ts";
 import { load, save, finishDay, currentStreak, type Store } from "../game/store.ts";
 import { award, shownTitle, TITLES, type TitleDef, type TitleEvent } from "../game/titles.ts";
 import { start } from "../engine/client.ts";
+import Bot from "./Bot.tsx";
+import Intro from "./Intro.tsx";
+import Home from "./Home.tsx";
 import Race from "./Race.tsx";
 import Steer from "./Steer.tsx";
 import Break from "./Break.tsx";
@@ -13,12 +17,11 @@ import Titles from "./Titles.tsx";
 import TitleSheet from "./TitleSheet.tsx";
 
 const data = raceData as RaceData;
-type View = "race" | "steer" | "break" | "why" | "titles";
-const TABS = [["race", "Race it"], ["steer", "Steer it"], ["break", "Break it"]] as const;
+type View = "intro" | "home" | "race" | "steer" | "break" | "titles" | "about";
 
 export default function Shell() {
-  const [view, setView] = useState<View>("race");
   const [store, setStore] = useState(load);
+  const [view, setView] = useState<View>(() => (store.introDone ? "home" : "intro"));
   const [practice, setPractice] = useState<number | null>(null);
   const [queue, setQueue] = useState<TitleDef[]>([]);
   const [sheetOpen, setSheetOpen] = useState(false);
@@ -34,12 +37,18 @@ export default function Shell() {
 
   const day = Math.max(1, dayNumber());
   const n = data.sentences.length;
-  const index = practice ?? sentenceIndex(day, n);
+  const today = sentenceIndex(day, n);
+  const index = practice ?? today;
   const sentence = data.sentences[index];
-  const saved = practice === null ? store.days[day] : undefined;
-  const initial = saved?.opening === sentence.opening ? saved.guesses : [];
+  const saved = store.days[day];
+  const todayGuesses = saved?.opening === data.sentences[today].opening ? saved.guesses : [];
+  const initial = practice === null ? todayGuesses : [];
+  const todayResult = todayGuesses.length >= 5
+    ? tally(todayGuesses.map((g, i) => grade(g, data.sentences[today].rounds[i], data.sentences[today].truth[i])))
+    : null;
   const earned = TITLES.filter((t) => store.titles[t.id]).length;
   const unseen = earned > store.seenTitles;
+  const daily = practice === null;
 
   // One place changes the store, so a title can never be awarded twice.
   function update(step: (s: Store) => Store, event?: (s: Store) => TitleEvent) {
@@ -67,59 +76,49 @@ export default function Shell() {
   }
 
   const wear = (id: string) => update((s) => ({ ...s, wearing: id }));
-  const daily = practice === null;
+  const home = () => go("home");
 
   return (
     <div className="app">
-      <header className="top">
-        <button className="mark" onClick={() => { setPractice(null); go("race"); }}>just guessing<i>_</i></button>
-        <div className="top-actions">
-          <button
-            className="pill titles-pill"
-            onClick={() => go(view === "titles" ? "race" : "titles")}
-            aria-label={view === "titles" ? "Play" : `Titles, ${earned} of ${TITLES.length} earned${unseen ? ", new ones to see" : ""}`}
-          >
-            {view === "titles" ? "Play" : <>Titles<b>{earned}/{TITLES.length}</b>{unseen && <i className="new-dot" />}</>}
-          </button>
-          <button className="pill" onClick={() => go(view === "why" ? "race" : "why")}>{view === "why" ? "Play" : "Why"}</button>
-        </div>
-      </header>
-      {(view === "race" || view === "steer" || view === "break") && (
-        <nav className="tabs" aria-label="Modes">
-          {TABS.map(([v, label]) => (
-            <button key={v} className={view === v ? "on" : ""} aria-current={view === v ? "page" : undefined} onClick={() => go(v)}>{label}</button>
-          ))}
-        </nav>
+      {view !== "intro" && (
+        <header className="top">
+          <button className="logo" onClick={() => { setPractice(null); home(); }}><Bot size={30} />just guessing</button>
+          <div className="top-actions">
+            <button className="chip-btn" onClick={() => go("titles")} aria-label={`Titles, ${earned} of ${TITLES.length} earned${unseen ? ", new ones to see" : ""}`}>
+              Titles <b>{earned}/{TITLES.length}</b>{unseen && <i className="new-dot" />}
+            </button>
+            <button className="chip-btn" onClick={() => go("intro")} aria-label="How to play">?</button>
+          </div>
+        </header>
+      )}
+
+      {view === "intro" && (
+        <Intro onDone={(next) => { update((s) => ({ ...s, introDone: true })); setPractice(null); go(next); }} />
+      )}
+      {view === "home" && (
+        <Home
+          day={day} result={todayResult ? { you: todayResult.you, ai: todayResult.machine } : null} progress={todayGuesses.length}
+          streak={currentStreak(store, day)} earned={earned} total={TITLES.length}
+          onRace={() => { setPractice(null); go("race"); }} onSteer={() => go("steer")} onBreak={() => go("break")}
+          onTitles={() => go("titles")} onHelp={() => go("intro")} onAbout={() => go("about")}
+        />
       )}
       {view === "race" && (
         <Race
           key={`${practice ?? "day"}-${index}`}
-          sentence={sentence}
-          day={day}
-          practice={!daily}
-          initial={initial}
-          streak={currentStreak(store, day)}
-          title={shownTitle(store)}
-          counted={store.counted.includes(day)}
-          onProgress={(guesses) => {
-            if (daily) update((s) => ({ ...s, days: { ...s.days, [day]: { opening: sentence.opening, guesses } } }));
-          }}
-          onFinish={(grades) => update(
-            (s) => (daily ? finishDay(s, day) : s),
-            (s) => ({ kind: "race", grades, daily, streak: s.streak, crowd: null }),
-          )}
+          sentence={sentence} day={day} practice={!daily} initial={initial}
+          streak={currentStreak(store, day)} title={shownTitle(store)} counted={store.counted.includes(day)}
+          onProgress={(guesses) => { if (daily) update((s) => ({ ...s, days: { ...s.days, [day]: { opening: sentence.opening, guesses } } })); }}
+          onFinish={(grades) => update((s) => (daily ? finishDay(s, day) : s), (s) => ({ kind: "race", grades, daily, streak: s.streak, crowd: null }))}
           onCounted={() => update((s) => (s.counted.includes(day) ? s : { ...s, counted: [...s.counted, day] }))}
           onCrowd={(grades, crowd) => update((s) => s, (s) => ({ kind: "race", grades, daily: true, streak: currentStreak(s, day), crowd }))}
-          onTitles={() => go("titles")}
-          onPractice={practiceAnother}
-          onWhy={() => go("why")}
-          onGo={go}
+          onTitles={() => go("titles")} onPractice={practiceAnother} onHome={home} onGo={go}
         />
       )}
-      {view === "steer" && <Steer onReceipt={(ranks, odds) => update((s) => s, () => ({ kind: "steer", ranks, odds }))} />}
-      {view === "break" && <Break onAnswer={(prompt, choices, probe) => update((s) => s, () => ({ kind: "break", prompt, choices, probe }))} />}
-      {view === "why" && <Why onPlay={() => go("race")} />}
-      {view === "titles" && <Titles store={store} onWear={wear} onPlay={() => go("race")} />}
+      {view === "steer" && <Steer onHome={home} onReceipt={(ranks, odds) => update((s) => s, () => ({ kind: "steer", ranks, odds }))} />}
+      {view === "break" && <Break onHome={home} onAnswer={(prompt, choices, probe) => update((s) => s, () => ({ kind: "break", prompt, choices, probe }))} />}
+      {view === "about" && <Why onPlay={home} />}
+      {view === "titles" && <Titles store={store} onWear={wear} onPlay={home} />}
       {sheetOpen && queue.length > 0 && <TitleSheet queue={queue} wearing={store.wearing} onWear={wear} onDone={() => setQueue([])} />}
     </div>
   );

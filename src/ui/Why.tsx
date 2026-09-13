@@ -1,10 +1,11 @@
 export default function Why({ onPlay }: { onPlay: () => void }) {
   return (
     <article className="why">
+      <p className="kicker">For parents and teachers</p>
       <h1>A game about odds, not answers</h1>
       <section>
         <h2>What it is</h2>
-        <p>Every day there is one sentence with its last five words hidden. You and a small language model both guess them, one word at a time. After each guess you see every word the machine was weighing up, and how likely it thought each one was.</p>
+        <p>Every day there is one sentence with its last five words hidden. You and a small language model both guess them, one word at a time. After each guess you see every word the AI was weighing up, and how likely it thought each one was.</p>
       </section>
       <section>
         <h2>What it shows</h2>
@@ -13,12 +14,12 @@ export default function Why({ onPlay }: { onPlay: () => void }) {
       <section>
         <h2>Why a game</h2>
         <p>Young people use chatbots to find things out. In a Pew survey of US teenagers in late 2025, 57 percent said they use them to search for information and 54 percent use them for schoolwork.</p>
-        <p>A study with middle school girls found they started out overtrusting generative AI, and that seeing its limits and mistakes for themselves is what changed that. So this does not lecture. It lets you watch the machine guess, lose to it, and sometimes beat it.</p>
+        <p>A study with middle school girls found they started out overtrusting generative AI, and that seeing its limits and mistakes for themselves is what changed that. So this does not lecture. It lets you watch the AI guess, lose to it, and sometimes beat it.</p>
       </section>
       <section>
         <h2>How it works</h2>
         <p>The model is SmolLM2, a small open model from Hugging Face with 135 million parameters. The daily race was computed ahead of time at full precision, so everyone gets the same sentence and the same odds without downloading anything.</p>
-        <p>Steer it and Break it run the same model live, inside your browser. It downloads once, between 118 and 182 megabytes depending on your browser, and nothing you type leaves your device. That copy is squeezed to 4 bits so it fits, which makes its guesses a little blurrier than the race.</p>
+        <p>Build a sentence and Trick the AI run the same model live, inside your browser. It downloads once, between 118 and 182 megabytes depending on your browser, and nothing you type leaves your device. That copy is squeezed to 4 bits so it fits, which makes its guesses a little blurrier than the race.</p>
       </section>
       <section>
         <h2>Why a small model</h2>
@@ -30,7 +31,7 @@ export default function Why({ onPlay }: { onPlay: () => void }) {
       </section>
       <section>
         <h2>The live count</h2>
-        <p>When you finish the daily race, your result joins a public count of humans against the machine. Only whether each word was right or wrong is sent, never the words you typed. Practice races are not counted.</p>
+        <p>When you finish the daily race, your result joins a public count of humans against the AI. Only whether each word was right or wrong is sent, never the words you typed. Practice races are not counted.</p>
       </section>
       <section>
         <h2>Credits</h2>

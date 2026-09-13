@@ -12,8 +12,8 @@ type Props = { grades: Grade[]; truth: string[]; crowd: CrowdDay | null; all: Cr
 function Tug({ share }: { share: number }) {
   const h = Math.round(share * 100);
   return (
-    <div className="tug" role="img" aria-label={`Humans have won ${h} percent of today's words, the machine ${100 - h} percent`}>
-      <div className="tug-labels"><span className="you">Humans {h}%</span><span className="mach">Machine {100 - h}%</span></div>
+    <div className="tug" role="img" aria-label={`Humans have won ${h} percent of today's words, the AI ${100 - h} percent`}>
+      <div className="tug-labels"><span className="you">Humans {h}%</span><span className="mach">AI {100 - h}%</span></div>
       <div className="tug-track">
         <span className="tug-you" style={{ width: `${h}%` }} />
         <span className="tug-knot" style={{ left: `${h}%` }} />
@@ -26,7 +26,7 @@ export default function CrowdPanel({ grades, truth, crowd, all, status }: Props)
   if (status === "off") return null;
   const head = (
     <div className="crowd-head">
-      <h2 id="crowd-title" className="label">Humans against the machine</h2>
+      <h2 id="crowd-title" className="kicker">Humans against the AI</h2>
       {crowd && <p className="live"><i className="live-dot" />{crowd.plays.toLocaleString("en-US")} {crowd.plays === 1 ? "person" : "people"} played today</p>}
     </div>
   );
@@ -56,7 +56,7 @@ export default function CrowdPanel({ grades, truth, crowd, all, status }: Props)
               <span className="cw-word">{w}{g.youRight && <span className="tag you">you</span>}</span>
               <span className="cw-pct">{Math.round(found * 100)}% of people</span>
               <span className="cw-bar"><span className="cw-fill" style={{ width: `${Math.max(2, found * 100)}%`, animationDelay: `${i * 70}ms` }} /></span>
-              <span className={g.machineRight ? "cw-mach got" : "cw-mach"}>{g.machineRight ? "the machine got it" : `the machine said ${g.machineWord}`}</span>
+              <span className={g.machineRight ? "cw-mach got" : "cw-mach"}>{g.machineRight ? "the AI got it" : `the AI said ${g.machineWord}`}</span>
               {i === rarest && <span className="cw-note">Only {Math.round(found * 100)}% of people found this one. You did.</span>}
             </li>
           );
@@ -65,7 +65,7 @@ export default function CrowdPanel({ grades, truth, crowd, all, status }: Props)
       )}
       {all && all.humans + all.machine + all.draws > 0 && (
         <p className="crowd-all">
-          All time, humans have won {count(all.humans, "race", "races")} and the machine {count(all.machine, "race", "races")}. {count(all.draws, "race", "races")} ended level.
+          All time, humans have won {count(all.humans, "race", "races")} and the AI {count(all.machine, "race", "races")}. {count(all.draws, "race", "races")} ended level.
         </p>
       )}
     </section>

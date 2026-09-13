@@ -26,7 +26,7 @@ test("the rarest word you got is only called out when fewer than half found it",
 
 test("the team line says who is winning today", () => {
   assert.equal(teamLine(day, 2), "10 people have played today. Humans are winning 56% of the words.");
-  assert.equal(teamLine({ ...day, words: [2, 1, 1, 1, 1] }, 2), "10 people have played today. The machine is winning 77% of the words.");
+  assert.equal(teamLine({ ...day, words: [2, 1, 1, 1, 1] }, 2), "10 people have played today. The AI is winning 77% of the words.");
   assert.equal(teamLine({ ...day, words: [9, 9, 9, 9, 9] }, 2), "10 people have played today. Humans are winning 69% of the words.");
   assert.equal(teamLine({ plays: 0, words: [0, 0, 0, 0, 0], scores: [0, 0, 0, 0, 0, 0] }, 2), "Nobody has finished today's race yet. Go first.");
 });

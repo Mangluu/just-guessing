@@ -13,23 +13,23 @@ export type TitleDef = { id: string; name: string; rarity: Rarity; mode: Mode; h
 export const RARITY_LABEL: Record<Rarity, string> = { common: "Common", rare: "Rare", legendary: "Legendary" };
 
 export const TITLES: TitleDef[] = [
-  { id: "beat", mode: "race", rarity: "common", name: "Beat the Machine", hint: "Win a race.", lesson: "It predicts patterns. You understood the sentence." },
-  { id: "draw", mode: "race", rarity: "common", name: "Dead Heat", hint: "Finish a race level with the machine.", lesson: "Different strengths, same score." },
+  { id: "beat", mode: "race", rarity: "common", name: "Beat the AI", hint: "Win a race.", lesson: "It predicts patterns. You understood the sentence." },
+  { id: "draw", mode: "race", rarity: "common", name: "Dead Heat", hint: "Finish a race level with the AI.", lesson: "Different strengths, same score." },
   { id: "humbled", mode: "race", rarity: "common", name: "Humbled", hint: "Lose a race by two words or more.", lesson: "On everyday phrases it has read more sentences than you ever will." },
   { id: "called", mode: "race", rarity: "rare", name: "Called It", hint: "Get a word right that it was confidently wrong about.", lesson: "Sounding sure is not the same as being right." },
-  { id: "mind", mode: "race", rarity: "rare", name: "Mind Reader", hint: "Make the exact mistake the machine made.", lesson: "You reached for the most common pattern, which is all it ever does." },
+  { id: "mind", mode: "race", rarity: "rare", name: "Mind Reader", hint: "Pick the same wrong word the AI picked.", lesson: "You reached for the most common pattern, which is all it ever does." },
   { id: "twist", mode: "race", rarity: "rare", name: "Plot Twist", hint: "Get a word it gave less than 1 percent.", lesson: "Surprise is where people win." },
-  { id: "oracle", mode: "race", rarity: "legendary", name: "Oracle", hint: "Get all five words in one race.", lesson: "Five for five. The machine never manages that on these sentences." },
+  { id: "oracle", mode: "race", rarity: "legendary", name: "Oracle", hint: "Get all five words in one race.", lesson: "Five for five. The AI never manages that on these sentences." },
   { id: "rarefind", mode: "race", rarity: "legendary", name: "Rare Find", hint: "Get a word that fewer than 1 in 10 players found that day.", lesson: "Almost nobody saw it coming. You did." },
-  { id: "autopilot", mode: "steer", rarity: "common", name: "Autopilot", hint: "Steer a sentence using only its favourite words.", lesson: "Taking the favourite word every time is roughly how a chatbot writes." },
-  { id: "chaos", mode: "steer", rarity: "rare", name: "Chaos Agent", hint: "Steer a sentence with odds of 1 in a million or worse.", lesson: "Every sentence has a probability. Yours was just tiny." },
+  { id: "autopilot", mode: "steer", rarity: "common", name: "Autopilot", hint: "Build a sentence using only the AI's favourite words.", lesson: "Taking the favourite word every time is roughly how a chatbot writes." },
+  { id: "chaos", mode: "steer", rarity: "rare", name: "Chaos Agent", hint: "Build a sentence with odds of 1 in a million or worse.", lesson: "Every sentence has a probability. Yours was just tiny." },
   { id: "sure", mode: "break", rarity: "common", name: "Truth Serum", hint: "Find a sentence it could finish in its sleep.", lesson: "Sometimes the next word really is obvious, and it knows." },
   { id: "hunter", mode: "break", rarity: "common", name: "Hallucination Hunter", hint: "Ask it about a place that does not exist.", lesson: "It answered anyway, in exactly the same confident voice." },
   { id: "lost", mode: "break", rarity: "common", name: "Lost in Translation", hint: "Leave it lost in a language that is not English.", lesson: "It learned mostly from English. Your language is nearly invisible to it." },
   { id: "polyglot", mode: "break", rarity: "rare", name: "Polyglot", hint: "Try it in three languages that are not English.", lesson: "The gap is not one language. It is most of them." },
-  { id: "tour", mode: "return", rarity: "common", name: "Full Tour", hint: "Race it, steer it and break it.", lesson: "Race, steer, break. That is the whole machine." },
+  { id: "tour", mode: "return", rarity: "common", name: "Full Tour", hint: "Race the AI, build a sentence and trick the AI.", lesson: "Race, build, trick. Now you know how it works." },
   { id: "regular", mode: "return", rarity: "rare", name: "Regular", hint: "Play the daily race three days in a row.", lesson: "Same machine every day. You are the one getting better." },
-  { id: "devoted", mode: "return", rarity: "legendary", name: "Devoted", hint: "Play the daily race seven days in a row.", lesson: "A week of racing a machine. It has not learned a thing. You have." },
+  { id: "devoted", mode: "return", rarity: "legendary", name: "Devoted", hint: "Play the daily race seven days in a row.", lesson: "A week of racing the AI. It has not learned a thing. You have." },
 ];
 
 export const LANGUAGE_PROBES = ["Suomi", "Eesti", "Latvija", "Lietuva", "Sverige"];

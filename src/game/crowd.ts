@@ -44,8 +44,8 @@ export function teamLine(c: CrowdDay, machineScore: number): string {
   const s = humanShare(c, machineScore);
   if (s === null) return played;
   const h = Math.round(s * 100);
-  if (h === 50) return `${played} Humans and the machine are dead level.`;
-  return h > 50 ? `${played} Humans are winning ${h}% of the words.` : `${played} The machine is winning ${100 - h}% of the words.`;
+  if (h === 50) return `${played} Humans and the AI are dead level.`;
+  return h > 50 ? `${played} Humans are winning ${h}% of the words.` : `${played} The AI is winning ${100 - h}% of the words.`;
 }
 
 // The counts live on Abacus, a free counting service that needs no account.

@@ -10,11 +10,12 @@ export type Store = {
   tour: string[]; // modes finished at least once
   languages: string[]; // languages tried in Break it
   counted: number[]; // days already added to the live count
+  introDone: boolean; // has seen, or skipped, the how-to-play tutorial
 };
 
 const KEY = "just-guessing.v1";
 export const fresh = (): Store => ({
-  days: {}, lastDay: 0, streak: 0, titles: {}, wearing: null, seenTitles: 0, tour: [], languages: [], counted: [],
+  days: {}, lastDay: 0, streak: 0, titles: {}, wearing: null, seenTitles: 0, tour: [], languages: [], counted: [], introDone: false,
 });
 
 export function load(): Store {

@@ -1,66 +1,46 @@
-import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import type { Grade, RaceSentence } from "../game/scoring.ts";
-import { grade, insight, shareLine, shareText, square, tally } from "../game/scoring.ts";
+import { grade, insight, shareText, square, tally } from "../game/scoring.ts";
 import { normalise } from "../game/words.ts";
 import { untilTomorrow } from "../game/daily.ts";
+import { optionsFor, seedOf } from "../game/options.ts";
 import { patchDay, readAll, readDay, standing, submit, teamLine, type CrowdAll, type CrowdDay } from "../game/crowd.ts";
 import type { TitleDef } from "../game/titles.ts";
-import Sentence, { type Mark } from "./Sentence.tsx";
-import Bars from "./Bars.tsx";
+import Bot from "./Bot.tsx";
+import Odds from "./Odds.tsx";
 import CrowdPanel from "./CrowdPanel.tsx";
 import Emblem from "./Emblem.tsx";
 
 type Props = {
-  sentence: RaceSentence;
-  day: number;
-  practice: boolean;
-  initial: string[];
-  streak: number;
-  title: TitleDef | null;
-  counted: boolean;
-  onProgress: (guesses: string[]) => void;
-  onFinish: (grades: Grade[]) => void;
-  onCounted: () => void;
-  onCrowd: (grades: Grade[], crowd: CrowdDay) => void;
-  onTitles: () => void;
-  onPractice: () => void;
-  onWhy: () => void;
-  onGo: (mode: "steer" | "break") => void;
+  sentence: RaceSentence; day: number; practice: boolean; initial: string[]; streak: number;
+  title: TitleDef | null; counted: boolean;
+  onProgress: (guesses: string[]) => void; onFinish: (grades: Grade[]) => void; onCounted: () => void;
+  onCrowd: (grades: Grade[], crowd: CrowdDay) => void; onTitles: () => void; onPractice: () => void;
+  onHome: () => void; onGo: (mode: "steer" | "break") => void;
 };
 
-const quote = (w: string) => `“${w}”`;
+const q = (w: string) => `“${w}”`;
 
 export default function Race(props: Props) {
-  const { sentence, day, practice, initial, streak, title, counted, onProgress, onFinish, onCounted, onCrowd, onTitles, onPractice, onWhy, onGo } = props;
+  const { sentence, day, practice, initial, streak, title, counted, onProgress, onFinish, onCounted, onCrowd, onTitles, onPractice, onHome, onGo } = props;
   const [guesses, setGuesses] = useState(initial);
   const [phase, setPhase] = useState<"guess" | "reveal" | "done">(initial.length >= 5 ? "done" : "guess");
-  const [draft, setDraft] = useState("");
   const [toast, setToast] = useState("");
   const [crowd, setCrowd] = useState<CrowdDay | null>(null);
   const [all, setAll] = useState<CrowdAll | null>(null);
   const [crowdStatus, setCrowdStatus] = useState<"loading" | "ready" | "off">(practice ? "off" : "loading");
-  const finished = useRef(false);
-  const mounted = useRef(true);
-
-  const grades = useMemo(
-    () => guesses.map((g, i) => grade(g, sentence.rounds[i], sentence.truth[i])),
-    [guesses, sentence],
-  );
-  const { you, machine } = tally(grades);
-  const machineToday = useMemo(
-    () => sentence.rounds.filter((round, i) => normalise(round.words[0]?.[0] ?? "") === normalise(sentence.truth[i])).length,
-    [sentence],
-  );
-  const r = phase === "reveal" ? guesses.length - 1 : guesses.length;
-
-  useEffect(() => {
-    mounted.current = true;
-    return () => { mounted.current = false; };
-  }, []);
-
-  // Who is winning today, shown before the first blank so you know the stakes.
-  // Kept for the finish too, which then only has to send its own increments.
+  const finished = useRef(false), mounted = useRef(true), feedback = useRef<HTMLDivElement>(null);
   const before = useRef<{ day: CrowdDay | null; all: CrowdAll | null }>({ day: null, all: null });
+
+  const grades = useMemo(() => guesses.map((g, i) => grade(g, sentence.rounds[i], sentence.truth[i])), [guesses, sentence]);
+  const { you, machine } = tally(grades);
+  const machineToday = useMemo(() => sentence.rounds.filter((rd, i) => normalise(rd.words[0]?.[0] ?? "") === normalise(sentence.truth[i])).length, [sentence]);
+  const r = phase === "reveal" ? guesses.length - 1 : guesses.length;
+  const options = r < 5 ? optionsFor(sentence.rounds[r], sentence.truth[r], seedOf(`${sentence.opening}|${r}`)) : [];
+
+  useEffect(() => { mounted.current = true; return () => { mounted.current = false; }; }, []);
+
+  // Who is winning today, shown before the first word. Kept so the finish only sends its own increments.
   useEffect(() => {
     if (practice || initial.length >= 5) return;
     Promise.all([readDay(day), readAll()]).then(([c, a]) => {
@@ -69,121 +49,125 @@ export default function Race(props: Props) {
     });
   }, [practice, day]);
 
-  // A finished race earns its titles. A daily one also joins the live count,
-  // then reads it back so the result can show where you stand.
+  // A finished race earns titles. A daily one also joins the live count.
   useEffect(() => {
     if (phase !== "done" || finished.current) return;
     finished.current = true;
     onFinish(grades);
     if (practice) return;
     (async () => {
-      let c: CrowdDay | null = null;
-      let a: CrowdAll | null = before.current.all;
+      let c: CrowdDay | null = null, a: CrowdAll | null = before.current.all;
       if (!counted) {
         const moved = await submit(day, grades);
         onCounted();
         if (before.current.day) c = patchDay(day, before.current.day, moved);
         if (a) a = { humans: moved["all-humans"] ?? a.humans, machine: moved["all-machine"] ?? a.machine, draws: moved["all-draws"] ?? a.draws };
       }
-      // nothing earlier to build on, as when a finished day is reopened, so read it all fresh
       if (!c) [c, a] = await Promise.all([readDay(day, true), a ? Promise.resolve(a) : readAll()]);
       if (!mounted.current) return;
       if (!c || !c.plays) { setCrowdStatus("off"); return; }
-      setCrowd(c);
-      setAll(a);
-      setCrowdStatus("ready");
-      onCrowd(grades, c);
+      setCrowd(c); setAll(a); setCrowdStatus("ready"); onCrowd(grades, c);
     })();
   }, [phase]);
 
-  useEffect(() => {
-    if (!toast) return;
-    const t = setTimeout(() => setToast(""), 1600);
-    return () => clearTimeout(t);
-  }, [toast]);
+  useEffect(() => { if (!toast) return; const t = setTimeout(() => setToast(""), 1800); return () => clearTimeout(t); }, [toast]);
 
-  // Read the guess from the form itself. If Enter arrives before React has
-  // re-rendered, state can lag a keystroke behind, and a disabled submit
-  // button makes the browser ignore Enter altogether.
-  function lock(e: FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    const typed = String(new FormData(e.currentTarget).get("guess") ?? "").replace(/\s/g, "");
-    if (!normalise(typed)) return;
-    const next = [...guesses, typed];
+  // number keys pick a word on a keyboard, with no animation of their own
+  useEffect(() => {
+    if (phase !== "guess") return;
+    const onKey = (e: KeyboardEvent) => { const i = Number(e.key) - 1; if (i >= 0 && i < options.length) pick(options[i]); };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  });
+
+  useEffect(() => {
+    if (phase !== "reveal") return;
+    const smooth = !matchMedia("(prefers-reduced-motion: reduce)").matches;
+    feedback.current?.scrollIntoView({ block: "nearest", behavior: smooth ? "smooth" : "auto" });
+  }, [phase, r]);
+
+  function pick(word: string) {
+    if (phase !== "guess") return;
+    const next = [...guesses, word];
     setGuesses(next);
-    setDraft("");
     setPhase("reveal");
     onProgress(next);
   }
 
-  const advance = () => setPhase(guesses.length < 5 ? "guess" : "done");
-
-  const header = (
-    <div className="meta">
-      <span>{practice ? "practice" : `day ${day}`} · word {Math.min(r + 1, 5)} of 5</span>
-      <span className="score"><span className="you">you {you}</span><span className="mach">machine {machine}</span></span>
-    </div>
-  );
-
-  if (phase === "guess") {
+  if (phase !== "done") {
+    const g = phase === "reveal" ? grades[r] : null;
+    const round = sentence.rounds[r];
     return (
-      <section className="screen" key={`guess-${r}`}>
-        {header}
-        {r === 0 && !practice && crowd && <p className="crowd-mini"><i className="live-dot" />{teamLine(crowd, machineToday)}</p>}
-        <Sentence opening={sentence.opening} words={sentence.truth.slice(0, r)} blank />
-        <form className="guess" onSubmit={lock}>
-          <input
-            value={draft}
-            onChange={(e) => setDraft(e.target.value.replace(/\s/g, ""))}
-            name="guess"
-            placeholder="the next word"
-            aria-label="Your guess for the next word"
-            autoFocus autoCapitalize="none" autoComplete="off" spellCheck={false} enterKeyHint="go" maxLength={24}
-          />
-          <button className={normalise(draft) ? "btn" : "btn idle"} aria-disabled={!normalise(draft)}>Lock it in</button>
-        </form>
-        <p className="hint">{r === 0 ? "Guess the next word. The machine already has." : "One word. It has already guessed this one too."}</p>
-      </section>
-    );
-  }
-
-  if (phase === "reveal") {
-    const g = grades[r], round = sentence.rounds[r];
-    return (
-      <section className="screen" key={`reveal-${r}`} aria-live="polite">
-        {header}
-        <Sentence opening={sentence.opening} words={sentence.truth.slice(0, r + 1)} drop end={r === 4 ? sentence.end : ""} />
-        <Bars round={round} guess={g.guess} truth={sentence.truth[r]} />
-        <p className="verdict">
-          <span className="you">{g.youRight ? "You got it" : `You said ${quote(g.guess)}`}</span>
-          <span className="mach">{g.machineRight ? "It got it" : `It said ${quote(g.machineWord)}`}</span>
+      <section className="stack">
+        <div className="race-top">
+          <button className="link back" onClick={onHome}>Home</button>
+          <div className="dots" role="img" aria-label={`Word ${r + 1} of 5`}>
+            {[0, 1, 2, 3, 4].map((i) => <i key={i} className={i < grades.length ? (grades[i].youRight ? "got" : "missed") : i === r ? "now" : ""} />)}
+          </div>
+          <div className="scores" aria-label={`You ${you}, AI ${machine}`}>
+            <span className="you-score">You <b>{you}</b></span>
+            <span className="ai-score"><Bot size={24} mood={g ? (g.machineRight ? "happy" : "oops") : "thinking"} />AI <b>{machine}</b></span>
+          </div>
+        </div>
+        {r === 0 && !g && !practice && crowd && <p className="team-line"><i className="live-dot" />{teamLine(crowd, machineToday)}</p>}
+        <p className="story card">
+          {sentence.opening}{" "}{sentence.truth.slice(0, r).join(" ")}{r > 0 ? " " : ""}
+          {g ? <span className="filled">{sentence.truth[r]}</span> : <span className="gap">?</span>}
+          {g && r === 4 ? sentence.end : ""}
         </p>
-        <p className="insight">{insight(g, round.effective)}</p>
-        <button className="btn wide" onClick={advance} autoFocus>{r < 4 ? "Next word" : "See how it went"}</button>
+        <p className="ask">{g ? (g.youRight ? "You got it!" : "Not quite!") : "Which word comes next?"}</p>
+        <div className="choices">
+          {options.map((w, i) => {
+            const state = !g ? "" : normalise(w) === normalise(sentence.truth[r]) ? "right" : normalise(w) === normalise(g.guess) ? "wrong" : "dim";
+            return (
+              <button key={w} className={`choice ${state}`.trim()} disabled={!!g} onClick={() => pick(w)} aria-keyshortcuts={String(i + 1)}>
+                {w}
+                {g && normalise(w) === normalise(g.machineWord) && <span className="who">AI's pick</span>}
+              </button>
+            );
+          })}
+        </div>
+        {g && (
+          <div ref={feedback} className={`card feedback ${g.youRight ? "yay" : "nope"}`} aria-live="polite">
+            <div className="fb-ai">
+              <Bot size={36} mood={g.machineRight ? "happy" : "oops"} />
+              <strong>{g.machineRight ? "The AI got it too." : `The AI guessed ${q(g.machineWord)}.`}</strong>
+            </div>
+            <p className="kicker">What the AI was thinking</p>
+            <Odds words={round.words} real={sentence.truth[r]} realP={round.truthP} you={g.guess} />
+            <p className="muted">{insight(g, round.effective)}</p>
+            <button className="btn wide" onClick={() => setPhase(guesses.length < 5 ? "guess" : "done")} autoFocus>{r < 4 ? "Next word" : "See who won"}</button>
+          </div>
+        )}
       </section>
     );
   }
 
-  const marks: Mark[] = grades.map((g) => (g.youRight && g.machineRight ? "both" : g.youRight ? "you" : g.machineRight ? "mach" : "none"));
   const place = crowdStatus === "ready" && crowd ? standing(crowd, you) : null;
-  const flex = !place || !place.others || !place.below ? ""
-    : place.below === place.others ? "Beat every human who played today"
-    : `Beat ${Math.round((100 * place.below) / place.others)}% of humans today`;
+  const flex = !place || !place.others || !place.below ? "" : place.below === place.others ? "Beat every human who played today" : `Beat ${Math.round((100 * place.below) / place.others)}% of humans today`;
   const text = shareText(day, grades, new URL(import.meta.env.BASE_URL, location.origin).href, [title ? `Wearing ${title.name}` : "", flex]);
-  const copy = async () => {
-    try { await navigator.clipboard.writeText(text); setToast("Copied"); } catch { setToast("Copying is blocked here"); }
+  const share = async () => {
+    try {
+      if (typeof navigator.share === "function") await navigator.share({ text });
+      else { await navigator.clipboard.writeText(text); setToast("Copied. Paste it anywhere."); }
+    } catch { /* closed the share sheet */ }
   };
-  const share = async () => { try { await navigator.share({ text }); } catch { /* closed the sheet */ } };
+  const mark = (i: number) => { const g = grades[i]; return g.youRight && g.machineRight ? "both" : g.youRight ? "you" : g.machineRight ? "ai" : "none"; };
 
   return (
-    <section className="screen">
-      <div className="result">
-        <p className="label">{practice ? "Practice sentence" : `Just Guessing, day ${day}`}</p>
-        <Sentence opening={sentence.opening} words={sentence.truth} end={sentence.end} marks={marks} />
-        <p className="legend"><span className="you">you got it</span><span className="mach">it got it</span><span className="both">both</span></p>
-        <p className="grid" aria-label={`You ${you}, machine ${machine}`}>{grades.map(square).join("")}</p>
-        <p className="tally"><span className="you">you {you}</span><span className="mach">machine {machine}</span></p>
-        <p className="line">{shareLine(grades)}</p>
+    <section className="stack">
+      <div className="card result-card">
+        <p className="kicker">{practice ? "Practice round" : `Today's race, day ${day}`}</p>
+        <div className="final">
+          <div className="side"><span>You</span><b className="you-t">{you}</b></div>
+          <p className="verdict-big">{you > machine ? "You win!" : you === machine ? "It is a draw" : "The AI wins"}</p>
+          <div className="side"><Bot size={30} mood={machine > you ? "happy" : "oops"} /><b className="ai-t">{machine}</b></div>
+        </div>
+        <p className="story small">
+          {sentence.opening}{" "}{sentence.truth.map((w, i) => <span key={i}><span className={`mk ${mark(i)}`}>{w}</span>{i < 4 ? " " : ""}</span>)}{sentence.end}
+        </p>
+        <p className="legend"><span className="mk you">you got it</span><span className="mk ai">AI got it</span><span className="mk both">both</span></p>
+        <p className="grid" aria-hidden="true">{grades.map(square).join("")}</p>
         {title && (
           <button className="wear" onClick={onTitles} aria-label={`Wearing ${title.name}. See your titles`}>
             <Emblem id={title.id} rarity={title.rarity} earned size={30} />
@@ -192,26 +176,21 @@ export default function Race(props: Props) {
         )}
       </div>
       {practice ? (
-        <p className="small">Practice races do not join the live count.</p>
+        <p className="muted center">Practice rounds do not count toward today's score.</p>
       ) : (
         <>
-          <div className="actions">
-            <button className="btn" onClick={copy}>Copy result</button>
-            {"share" in navigator && <button className="btn ghost" onClick={share}>Share</button>}
-          </div>
-          <p className="small">Streak {streak} · new sentence in {untilTomorrow()}</p>
+          <button className="btn wide" onClick={share}>Share my result</button>
+          <p className="muted center">Streak {streak} · new sentence in {untilTomorrow()}</p>
           <CrowdPanel grades={grades} truth={sentence.truth} crowd={crowd} all={all} status={crowdStatus} />
         </>
       )}
-      <div className="next">
-        <p className="label">The machine behind this is small enough to run in your browser</p>
-        <div className="actions">
-          <button className="btn ghost" onClick={() => onGo("steer")}>Steer it</button>
-          <button className="btn ghost" onClick={() => onGo("break")}>Break it</button>
-        </div>
+      <p className="kicker center">Keep playing</p>
+      <div className="modes">
+        <button className="card mode" onClick={() => onGo("steer")}><span className="icon build" aria-hidden="true">Aa</span><h2>Build a sentence</h2><p>Pick words from the AI's list.</p></button>
+        <button className="card mode" onClick={() => onGo("break")}><span className="icon trick" aria-hidden="true">?!</span><h2>Trick the AI</h2><p>See how sure it really is.</p></button>
       </div>
-      <button className="btn ghost wide" onClick={onPractice}>Practice with another sentence</button>
-      <button className="linkish" onClick={onWhy}>Why this exists</button>
+      <button className="btn quiet wide" onClick={onPractice}>Practice with another sentence</button>
+      <button className="link" onClick={onHome}>Back to home</button>
       {toast && <div className="toast" role="status">{toast}</div>}
     </section>
   );
