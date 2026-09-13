@@ -1,0 +1,163 @@
+# Candidate sentences for the daily race. The last five words are the blanks,
+# so they must be plain words with no punctuation between them. Needs at least
+# four words before them. build-race.ts measures every line and keeps the best.
+The best way to learn a language is to speak it every single day.
+My grandmother says the secret to good bread is patience and warm hands.
+The train to Helsinki was late again because of snow on the tracks.
+After the rain stopped, the whole street smelled like warm wet stone.
+When the lights went out, everyone in the cinema started laughing at once.
+She opened the letter slowly because she already knew what it said.
+If you want to see the northern lights, you need a clear dark sky.
+The dog waited by the door until the children came home from school.
+Most people think coffee wakes you up, but it only hides how tired you are.
+The museum was closed, so we walked along the river instead.
+He learned to swim in a lake so cold his fingers went numb.
+Every summer my family drives to a small cabin with no electricity.
+The best part of the concert was when the singer forgot the words.
+In winter the sun rises late and sets before most people leave work.
+The bakery on the corner sells out of cinnamon buns by nine every morning.
+The library is always quiet except for the sound of pages turning.
+Before the exam he read the same page five times without understanding anything.
+The sauna was so hot that nobody could say a single word.
+We missed the last bus and had to walk home in the snow.
+The cat walked across my keyboard and sent the email before I was ready.
+The film was three hours long and nobody in the room noticed.
+The river freezes so thick in January that people drive cars across it.
+She practised her speech in front of the mirror until it felt natural.
+The best advice I ever got was to ask questions before making decisions.
+My phone battery always dies at exactly the moment I need it most.
+Group projects are great until one person does all the work.
+I told myself I would sleep early, but then I opened my phone.
+The teacher asked a simple question and the whole class looked at the floor.
+Every time I clean my room, I find something I thought I had lost.
+The group chat was completely silent until someone sent a cat video.
+My little brother can fall asleep anywhere, even on a moving bus.
+The wifi stopped working five minutes before the exam started.
+Nobody reads the terms and conditions before they click agree.
+The ferry to Tallinn left early, so we watched the sunrise from the deck.
+In Riga the old town looks like it was taken from a fairy tale.
+The best thing about summer in Finland is that it never gets dark.
+My dad still prints out maps even though his phone has directions.
+The new student sat alone at lunch until someone asked her to join.
+I only planned to watch one episode, and suddenly it was three in the morning.
+The robot vacuum spent the whole afternoon stuck under the sofa.
+Every football match in our town ends with everyone arguing about the referee.
+The recipe said it would take twenty minutes, but it took two hours.
+Her plants were doing great until she went on holiday for a week.
+The loudest person in the meeting is not always the one who is right.
+The elevator was broken, so we carried the sofa up six floors.
+My best ideas always come when I am in the shower.
+The concert tickets sold out in less than two minutes.
+When it snows for the first time, the whole city slows down.
+He said he would be ready in five minutes, which means half an hour.
+The old man on the bench feeds the same pigeons every morning.
+Learning to code is mostly reading error messages and trying again.
+The weather app said sunny all day, so of course it rained.
+My grandfather tells the same story every Christmas and we still laugh.
+The best seat on the bus is the one next to the window.
+We spent the whole trip trying to find a place to eat.
+The lake was so calm that it looked like a mirror.
+My first job was selling ice cream on a beach with no customers.
+Nobody expected the smallest team in the league to win the whole tournament.
+I tried to make pancakes for breakfast and set off the smoke alarm.
+The museum guide spoke so quietly that only the front row could hear.
+After three years of lessons, I can finally play one song on the guitar.
+Traffic stopped for ten minutes because a family of ducks was crossing the road.
+Our neighbour grows tomatoes on a balcony that never gets any sun.
+The hardest part of running in the morning is getting out of bed.
+The best way to make friends in a new city is to join a club.
+The volunteers cleaned the beach and found more plastic than sand.
+The old kitchen radio can only find a station that plays jazz.
+Every exam season the library is full by eight in the morning.
+My mother can tell I am lying just by looking at my face.
+The first snow of the year makes everyone act like children again.
+When the ferry left the harbour, the town looked smaller than I remembered.
+We waited two hours in the rain to see the band for twenty minutes.
+The job for beginners asked for five years of experience.
+I put my keys somewhere safe and now I cannot find them anywhere.
+The best part of any party is talking to people in the kitchen.
+The storm knocked out the power, so we played cards by candlelight.
+She saved money for a whole year to buy her first bicycle.
+The quiet kid at the back of the class turned out to be brilliant.
+Every time I learn a new word, I start hearing it everywhere.
+The sea was too cold for swimming, but we went in anyway.
+My computer always decides to update right before an important meeting.
+The hardest thing about moving abroad is missing the food from home.
+The student council voted to put a piano in the main hall.
+The forest behind our school is full of blueberries in August.
+You can tell it is spring when people start sitting outside in jackets.
+The best way to remember something is to explain it to someone else.
+My friend always orders the same thing and then regrets it.
+The chatbot confidently told me that a spider has six legs.
+The chatbot wrote my essay in seconds, and my teacher noticed in minutes.
+The app promised to save me time but mostly showed me advertisements.
+I asked the chatbot for one fact and it invented a whole book.
+The delivery robot stopped because it thought a shadow was a hole.
+The best part of a long trip is the moment you arrive home.
+Someone always brings cake to the office and says it is healthy.
+The line for the free concert went all the way around the block.
+My neighbour practises the trumpet every evening at exactly seven.
+The children built a snowman taller than the house.
+The bus driver waited for us even though we were very late.
+The old map showed a road that no longer exists.
+We climbed the hill for hours just to see the city lights.
+The hospital needed volunteers, so half of our class signed up.
+My friends and I built a website for our band that nobody visits.
+The lecture was so boring that even the professor looked sleepy.
+The sun finally came out, and the whole park was full within minutes.
+My grandmother sends voice messages that are longer than a podcast.
+On the first day of school she forgot her bag at home.
+The best thing about a rainy Sunday is staying in bed all day.
+The city planted a thousand trees along the new tram line.
+I tried to fix the bike myself and now it has an extra part.
+Nobody at the party actually knew who invited them.
+The festival was cancelled because of rain, so we danced in the car.
+My teacher can spot a copied essay from across the room.
+When you are hungry, every restaurant menu looks like a love letter.
+The first time I saw the sea, I could not stop smiling.
+The coach told us that practice matters more than talent.
+The small island near the coast has more sheep than people.
+My sister learned to drive in the snow, so now nothing scares her.
+The talent show winner was a boy who could whistle any song.
+We spent all summer building a treehouse that lasted one storm.
+The shop assistant pretended not to notice that I was singing along.
+The best way to cool down in a Finnish summer is to jump in a lake.
+Every year the city holds a festival where strangers dance in the streets.
+The mountain looked close, but reaching it took us all day.
+My uncle says he wrote a famous song and nobody believes him.
+The printer only stops working when you are already late.
+Our town has one traffic light and everyone complains about it.
+The kitten fell asleep in the middle of the kitchen floor.
+My summer job taught me that customers are always in a hurry.
+My friend says she can taste which water came from the tap.
+The storm was so loud that the dog hid under my bed.
+The birthday cake was beautiful until my brother dropped it.
+Old photos of my parents prove that they were once very cool.
+The only thing more stressful than an exam is waiting for the results.
+The island ferry only runs twice a day, so do not miss it.
+Every good story needs a villain that the audience secretly likes.
+The school trip to Stockholm is all anyone has talked about for weeks.
+My grandmother still writes letters by hand and sends them by post.
+The tallest boy in our class is scared of small dogs.
+Whenever I say something important, my microphone is always on mute.
+The bakery gives away old bread to anyone who asks.
+The cheapest flight to Oslo left at five in the morning.
+Machines can write a poem, but they cannot tell you what it means.
+The volunteers planted flowers where the old parking lot used to be.
+My friend fell asleep during the horror film and missed the ending.
+The lighthouse keeper had not spoken to anyone for weeks.
+When our flight was cancelled, strangers at the airport shared their food.
+The new phone is thinner and faster and somehow more annoying.
+My brother says video games taught him more English than school.
+The best view of the city is from the top of the old church.
+The quietest place in the whole city is the library on a Friday night.
+The dentist asked me a question while both her hands were in my mouth.
+It is hard to take a serious photo when your friend is making faces.
+The street musician played the same song until someone paid him to stop.
+My parents met on a train that was going the wrong way.
+The sign said wet paint, so naturally everyone touched it.
+The model guessed the next word, and it was completely wrong.
+Every holiday starts with a long argument about who packed the charger.
+The midnight sun makes it very hard to know when to sleep.
+Our class raised enough money to plant trees for a whole year.
+The science museum let us touch a real piece of the moon.

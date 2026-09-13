@@ -1,0 +1,7 @@
+:root { --bg: #131216; --ink: #F2EEE6; --ink2: #A9A5A0; --human: #FF7A1A; }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font-family: "Hanken Grotesk", "Helvetica Neue", Arial, sans-serif; }
+.soon { min-height: 100svh; display: grid; place-content: center; gap: 14px; padding: 24px; max-width: 34rem; margin: 0 auto; }
+.soon h1 { font-family: "Unbounded", Impact, sans-serif; font-weight: 800; font-size: clamp(2.2rem, 8vw, 3.6rem); line-height: 1; margin: 0; }
+.soon p { margin: 0; color: var(--ink2); font-size: 1.1rem; line-height: 1.5; }
+.soon .eyebrow { font-family: "IBM Plex Mono", Menlo, monospace; font-size: .75rem; letter-spacing: .14em; text-transform: uppercase; color: var(--human); }
