@@ -56,9 +56,9 @@ export function shareLine(grades: Grade[]): string {
   return `It beat me ${machine} to ${you}.`;
 }
 
-export function shareText(day: number, grades: Grade[], url: string): string {
+export function shareText(day: number, grades: Grade[], url: string, extra: string[] = []): string {
   const { you, machine } = tally(grades);
-  return [`Just Guessing, day ${day}`, grades.map(square).join(""), `me ${you}, machine ${machine}`, shareLine(grades), url].join("\n");
+  return [`Just Guessing, day ${day}`, grades.map(square).join(""), `me ${you}, machine ${machine}`, shareLine(grades), ...extra.filter(Boolean), url].join("\n");
 }
 
 /** One plain sentence under each reveal, saying what the numbers just showed. */

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import raceData from "../data/race.json";
 import type { RaceData } from "../game/scoring.ts";
 import { oneIn, pct } from "../game/scoring.ts";
@@ -9,7 +9,7 @@ import Loading from "./Loading.tsx";
 
 const openings = (raceData as RaceData).sentences.map((s) => s.opening);
 const PICKS = 5;
-type Pick = WordProb & { long?: boolean };
+type Pick = WordProb & { rank: number; long?: boolean };
 
 function randomOpening(not?: string) {
   const i = Math.floor(Math.random() * openings.length);
@@ -17,13 +17,13 @@ function randomOpening(not?: string) {
 }
 
 function options(pred: Prediction): Pick[] {
-  const top: Pick[] = pred.words.slice(0, 5);
+  const top: Pick[] = pred.words.slice(0, 5).map((w, i) => ({ ...w, rank: i + 1 }));
   const tail = pred.words.slice(5).filter((w) => w.p >= 0.001);
   const long = tail[tail.length - 1];
-  return long ? [...top, { ...long, long: true }] : top;
+  return long ? [...top, { ...long, rank: pred.words.indexOf(long) + 1, long: true }] : top;
 }
 
-export default function Steer() {
+export default function Steer({ onReceipt }: { onReceipt: (ranks: number[], odds: number) => void }) {
   const engine = useEngine();
   const [opening, setOpening] = useState(() => randomOpening());
   const [picks, setPicks] = useState<Pick[]>([]);
@@ -34,6 +34,15 @@ export default function Steer() {
   const ready = engine.phase === "ready";
   const done = picks.length >= PICKS;
   const context = [opening, ...picks.map((x) => x.w)].join(" ");
+  const reported = useRef(false);
+
+  // a finished sentence earns its titles, once per sentence
+  useEffect(() => {
+    if (!done) { reported.current = false; return; }
+    if (reported.current) return;
+    reported.current = true;
+    onReceipt(picks.map((x) => x.rank), picks.reduce((a, x) => a * x.p, 1));
+  }, [done]);
 
   useEffect(() => {
     if (!ready || done) return;

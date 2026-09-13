@@ -1,17 +1,27 @@
-// Everything persists in this browser only. No account, nothing sent anywhere.
+// Everything here persists in this browser only. The live count in crowd.ts
+// sends right or wrong results for the daily race, never the words typed.
 export type Store = {
   days: Record<string, { opening: string; guesses: string[] }>;
   lastDay: number;
   streak: number;
-  titles: string[];
+  titles: Record<string, number>; // title id to when it was earned
+  wearing: string | null; // the title chosen for the share card
+  seenTitles: number; // how many titles the player has already looked at
+  tour: string[]; // modes finished at least once
+  languages: string[]; // languages tried in Break it
+  counted: number[]; // days already added to the live count
 };
 
 const KEY = "just-guessing.v1";
-const fresh = (): Store => ({ days: {}, lastDay: 0, streak: 0, titles: [] });
+export const fresh = (): Store => ({
+  days: {}, lastDay: 0, streak: 0, titles: {}, wearing: null, seenTitles: 0, tour: [], languages: [], counted: [],
+});
 
 export function load(): Store {
   try {
-    return { ...fresh(), ...JSON.parse(localStorage.getItem(KEY) ?? "{}") };
+    const raw = JSON.parse(localStorage.getItem(KEY) ?? "{}");
+    if (Array.isArray(raw.titles)) raw.titles = {}; // the first version kept an unused list here
+    return { ...fresh(), ...raw };
   } catch {
     return fresh();
   }

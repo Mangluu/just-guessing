@@ -7,7 +7,7 @@
 > - The race has no suggestion chips. With the real word always among them, a tap gave the answer away.
 > - Break's dial counts how many options the model is choosing between. The top word alone is usually "the", which says nothing about what it knows.
 > - Steer's receipt shows what the model would have written without an odds comparison. Picking the top word each time does not produce the likeliest sentence, so that comparison read backwards.
-> - Titles and the humans against machine counter are not built.
+> - Titles and the live count of humans against the machine were added after the first release. The count uses Abacus, a free counting service, instead of a server of our own, so nothing needs an account.
 
 Handoff for a coding agent. Everything needed to build, test and deploy the product is in this file. Where a decision is open it is marked **DECIDE** with a default. Build the default unless told otherwise.
 

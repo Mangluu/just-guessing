@@ -2,7 +2,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { grade, square, shareLine, pct, oneIn, type Round } from "../src/game/scoring.ts";
 import { dayNumber, sentenceIndex } from "../src/game/daily.ts";
-import { finishDay, currentStreak } from "../src/game/store.ts";
+import { finishDay, currentStreak, fresh } from "../src/game/store.ts";
 
 const round = (words: [string, number][], truthP = 0.05, rank: number | null = 2): Round =>
   ({ words, truthP, rank, effective: 60 });
@@ -46,7 +46,7 @@ test("days turn over at local midnight and survive the clock change", () => {
 });
 
 test("the streak grows on consecutive days and resets after a gap", () => {
-  let s = { days: {}, lastDay: 0, streak: 0, titles: [] as string[] };
+  let s = fresh();
   s = finishDay(s, 5); assert.equal(s.streak, 1);
   s = finishDay(s, 6); assert.equal(s.streak, 2);
   s = finishDay(s, 6); assert.equal(s.streak, 2);

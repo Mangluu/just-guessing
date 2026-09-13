@@ -34,7 +34,7 @@ function Meter({ choices }: { choices: number }) {
   );
 }
 
-export default function Break() {
+export default function Break({ onAnswer }: { onAnswer: (prompt: string, choices: number, probe: string | null) => void }) {
   const engine = useEngine();
   const [text, setText] = useState("");
   const [asked, setAsked] = useState("");
@@ -43,13 +43,15 @@ export default function Break() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
 
-  async function ask(prompt: string) {
+  async function ask(prompt: string, probe: string | null) {
     const clean = prompt.trim().replace(/\s+/g, " ");
     if (!clean || busy) return;
     setText(clean); setAsked(clean); setPred(null); setWrites(null); setError(""); setBusy(true);
     try {
       const odds = predictLive(clean), next = writeOn(clean);
-      setPred(await odds);
+      const p = await odds;
+      setPred(p);
+      onAnswer(clean, Math.round(p.effective), probe);
       setWrites(await next);
     } catch (e) {
       setError((e as Error).message);
@@ -65,9 +67,9 @@ export default function Break() {
       <div className="meta"><span>break · ask anything</span><span>live on this device</span></div>
       <p className="hint">Start a sentence and it guesses the next word. Try something true, something made up, and something in your own language.</p>
       <div className="chips">
-        {probes.map((p) => <button key={p.label} className="chip" onClick={() => ask(p.prompt)} disabled={busy}>{p.label}</button>)}
+        {probes.map((p) => <button key={p.label} className="chip" onClick={() => ask(p.prompt, p.label)} disabled={busy}>{p.label}</button>)}
       </div>
-      <form className="guess" onSubmit={(e: FormEvent<HTMLFormElement>) => { e.preventDefault(); ask(String(new FormData(e.currentTarget).get("prompt") ?? "")); }}>
+      <form className="guess" onSubmit={(e: FormEvent<HTMLFormElement>) => { e.preventDefault(); ask(String(new FormData(e.currentTarget).get("prompt") ?? ""), null); }}>
         <input name="prompt" value={text} onChange={(e) => setText(e.target.value)} placeholder="Start a sentence" aria-label="Start a sentence" autoComplete="off" enterKeyHint="go" maxLength={140} />
         <button className={busy || !text.trim() ? "btn idle" : "btn"} aria-disabled={busy || !text.trim()}>Ask</button>
       </form>

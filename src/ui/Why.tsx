@@ -29,6 +29,10 @@ export default function Why({ onPlay }: { onPlay: () => void }) {
         <p>SmolLM2 was built to understand and write mostly English. Ask it something in Finnish or Estonian and it goes from choosing between a handful of options to choosing between hundreds. The languages of the Baltic Sea region are close to invisible to it. That gap is worth talking about.</p>
       </section>
       <section>
+        <h2>The live count</h2>
+        <p>When you finish the daily race, your result joins a public count of humans against the machine. Only whether each word was right or wrong is sent, never the words you typed. Practice races are not counted.</p>
+      </section>
+      <section>
         <h2>Credits</h2>
         <p>Made by Shivang Gupta as part of an application to the BSRYF AI Working Group. Allison Chen and Isabella Pu proposed a game in 2026 where a player and a computer take turns choosing words from a list of odds. This builds on that idea with a real model.</p>
         <ol>
@@ -37,6 +41,7 @@ export default function Why({ onPlay }: { onPlay: () => void }) {
           <li><a href="https://arxiv.org/html/2603.28374" target="_blank" rel="noreferrer">Chen and Pu, Using Games to Learn How Large Language Models Work, arXiv, 2026</a></li>
           <li><a href="https://huggingface.co/HuggingFaceTB/SmolLM2-135M" target="_blank" rel="noreferrer">SmolLM2-135M by Hugging Face, Apache 2.0</a></li>
           <li><a href="https://github.com/huggingface/transformers.js" target="_blank" rel="noreferrer">Transformers.js</a></li>
+          <li><a href="https://jasoncameron.dev/abacus/" target="_blank" rel="noreferrer">Abacus, the free counting service behind the live count</a></li>
         </ol>
       </section>
       <button className="btn wide" onClick={onPlay}>Back to the game</button>
