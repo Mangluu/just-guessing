@@ -1,5 +1,14 @@
 # Just Guessing — build specification
 
+> **This is the plan as written before the build.** The live app follows it, with these changes made after measuring the real model.
+>
+> - The daily race is computed ahead of time at full precision instead of live in the browser, so it plays instantly and everyone gets identical odds.
+> - The WebAssembly fallback loads the 4-bit build, not the 8-bit one. The 8-bit build shifts each row's odds by up to 21 points when predictions are batched.
+> - The race has no suggestion chips. With the real word always among them, a tap gave the answer away.
+> - Break's dial counts how many options the model is choosing between. The top word alone is usually "the", which says nothing about what it knows.
+> - Steer's receipt shows what the model would have written without an odds comparison. Picking the top word each time does not produce the likeliest sentence, so that comparison read backwards.
+> - Titles and the humans against machine counter are not built.
+
 Handoff for a coding agent. Everything needed to build, test and deploy the product is in this file. Where a decision is open it is marked **DECIDE** with a default. Build the default unless told otherwise.
 
 Companion: the design vision with a playable scripted mock (the "vision page"). Match its look and copy tone.

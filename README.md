@@ -10,7 +10,7 @@ A language model does not look anything up. At every step it scores every word i
 
 ## How it works
 
-The daily race is precomputed by [SmolLM2-135M](https://huggingface.co/HuggingFaceTB/SmolLM2-135M) at full precision, so everyone gets the same sentence and the same odds without downloading anything. Next come Steer and Break, which run the same model live in your browser through [Transformers.js](https://github.com/huggingface/transformers.js).
+The daily race is precomputed by [SmolLM2-135M](https://huggingface.co/HuggingFaceTB/SmolLM2-135M) at full precision, so everyone gets the same sentence and the same odds without downloading anything. Steer and Break run the same model live in your browser through [Transformers.js](https://github.com/huggingface/transformers.js). It downloads only when you open one of them, and nothing you type leaves your device.
 
 ## Run it
 
