@@ -33,7 +33,7 @@ export default function Loading({ state }: { state: EngineState }) {
   return (
     <section className="screen loading" aria-live="polite">
       <p className="label">{warming ? "Warming up" : "Downloading the machine"}</p>
-      <p className="load-count"><span className="big">{mb(warming ? total : state.loaded)}</span>of {mb(total)} MB</p>
+      <p className="load-count"><span className="big">{mb(warming ? total : state.loaded)}</span> of {mb(total)} MB</p>
       <div className="load-bar"><span style={{ width: `${warming ? 100 : Math.min(100, (100 * state.loaded) / total)}%` }} /></div>
       <p className="load-line" key={i}>{LINES[i]}</p>
       {state.device === "wasm" && <p className="small">No graphics card access here, so it runs on the processor and thinks more slowly.</p>}

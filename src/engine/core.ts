@@ -122,5 +122,8 @@ export async function continueText(E: Engine, context: string, maxTokens = 28): 
   const ids = Array.from(out.data as BigInt64Array).slice(enc.input_ids.dims[1]).map(Number);
   const text: string = E.tok.decode(ids, { skip_special_tokens: true });
   const cut = text.search(/[.!?](\s|$)|\n/);
-  return (cut >= 0 ? text.slice(0, cut + 1) : text).trimEnd();
+  const kept = (cut >= 0 ? text.slice(0, cut + 1) : text).trimEnd();
+  // greedy decoding can loop ("and I go to the lake and I go to the lake"), so cap it
+  const words = kept.trim().split(/\s+/);
+  return words.length <= 16 ? kept : (kept.match(/^\s*/)?.[0] ?? "") + words.slice(0, 16).join(" ");
 }

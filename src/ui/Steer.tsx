@@ -3,7 +3,7 @@ import raceData from "../data/race.json";
 import type { RaceData } from "../game/scoring.ts";
 import { oneIn, pct } from "../game/scoring.ts";
 import type { Prediction, WordProb } from "../engine/core.ts";
-import { predictLive, useEngine, writeOn } from "../engine/client.ts";
+import { predictLive, useEngine } from "../engine/client.ts";
 import Sentence from "./Sentence.tsx";
 import Loading from "./Loading.tsx";
 
@@ -28,7 +28,7 @@ export default function Steer() {
   const [opening, setOpening] = useState(() => randomOpening());
   const [picks, setPicks] = useState<Pick[]>([]);
   const [pred, setPred] = useState<Prediction | null>(null);
-  const [own, setOwn] = useState("");
+  const [own, setOwn] = useState<WordProb[] | null>(null);
   const [toast, setToast] = useState("");
   const [error, setError] = useState("");
   const ready = engine.phase === "ready";
@@ -43,13 +43,23 @@ export default function Steer() {
     return () => { live = false; };
   }, [ready, done, context]);
 
+  // Its own five words, chosen the way yours were: the top word each time. Only
+  // runs once the receipt is up, so it never slows down picking.
   useEffect(() => {
-    if (!ready) return;
+    if (!ready || !done) return;
     let live = true;
-    setOwn("");
-    writeOn(opening).then((t) => { if (live) setOwn(t); }, () => {});
+    setOwn(null);
+    (async () => {
+      const words: WordProb[] = [];
+      for (let i = 0; i < PICKS; i++) {
+        const p = await predictLive([opening, ...words.map((x) => x.w)].join(" "));
+        if (!p.words[0]) break;
+        words.push(p.words[0]);
+      }
+      if (live) setOwn(words);
+    })().catch(() => {});
     return () => { live = false; };
-  }, [ready, opening]);
+  }, [ready, done, opening]);
 
   useEffect(() => {
     if (!toast) return;
@@ -109,8 +119,12 @@ export default function Steer() {
         <div className="odds"><p className="label">The chance it writes exactly this</p><strong>{oneIn(odds)}</strong></div>
         {lowest < 0.01 && <p className="stamp">Made with a {pct(lowest)} word</p>}
         <div className="own">
-          <p className="label">What it writes on its own</p>
-          <p className="sentence">{own ? `${opening} ${own.trim().split(/\s+/).slice(0, 14).join(" ")}` : "Thinking"}</p>
+          <p className="label">What it would have written</p>
+          {own ? (
+            <p className="sentence">{opening} {own.map((x) => x.w).join(" ")}</p>
+          ) : (
+            <p className="thinking">Thinking</p>
+          )}
         </div>
       </div>
       <div className="actions">

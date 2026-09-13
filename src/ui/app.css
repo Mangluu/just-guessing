@@ -145,7 +145,7 @@ p { margin: 0; }
 .loading { padding-top: 24px; }
 .load-title { font: 800 1.4rem/1.15 var(--display); margin: 0; }
 .load-count { font: 500 1rem var(--mono); color: var(--ink2); }
-.load-count .big { font: 800 3rem/1 var(--display); color: var(--ink); margin-right: 8px; font-variant-numeric: tabular-nums; }
+.load-count .big { font: 800 3rem/1 var(--display); color: var(--ink); margin-right: 2px; font-variant-numeric: tabular-nums; }
 .load-bar { height: 8px; border-radius: 999px; background: var(--bg3); overflow: hidden; }
 .load-bar span { display: block; height: 100%; background: var(--you); transition: width .3s ease; }
 .load-line { font-family: var(--serif); font-size: 1.25rem; line-height: 1.35; min-height: 3.4em; animation: drop .5s ease both; }
