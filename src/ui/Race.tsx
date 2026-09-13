@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { Grade, RaceSentence } from "../game/scoring.ts";
-import { grade, insight, shareText, square, tally } from "../game/scoring.ts";
+import { grade, insight, pct, shareText, square, tally } from "../game/scoring.ts";
 import { normalise } from "../game/words.ts";
 import { untilTomorrow } from "../game/daily.ts";
 import { optionsFor, seedOf } from "../game/options.ts";
@@ -10,6 +10,7 @@ import Bot from "./Bot.tsx";
 import Odds from "./Odds.tsx";
 import CrowdPanel from "./CrowdPanel.tsx";
 import Emblem from "./Emblem.tsx";
+import Mark, { Gap } from "./Mark.tsx";
 
 type Props = {
   sentence: RaceSentence; day: number; practice: boolean; initial: string[]; streak: number;
@@ -30,6 +31,7 @@ export default function Race(props: Props) {
   const [all, setAll] = useState<CrowdAll | null>(null);
   const [crowdStatus, setCrowdStatus] = useState<"loading" | "ready" | "off">(practice ? "off" : "loading");
   const finished = useRef(false), mounted = useRef(true), feedback = useRef<HTMLDivElement>(null);
+  const story = useRef<HTMLParagraphElement>(null), heading = useRef<HTMLHeadingElement>(null), moved = useRef(false);
   const before = useRef<{ day: CrowdDay | null; all: CrowdAll | null }>({ day: null, all: null });
 
   const grades = useMemo(() => guesses.map((g, i) => grade(g, sentence.rounds[i], sentence.truth[i])), [guesses, sentence]);
@@ -86,6 +88,13 @@ export default function Race(props: Props) {
     feedback.current?.scrollIntoView({ block: "nearest", behavior: smooth ? "smooth" : "auto" });
   }, [phase, r]);
 
+  // Keyboard and screen reader users go back to the sentence for each new word, and to the heading at the end.
+  useEffect(() => {
+    if (!moved.current) { moved.current = true; return; }
+    if (phase === "guess") story.current?.focus();
+    if (phase === "done") heading.current?.focus();
+  }, [phase]);
+
   function pick(word: string) {
     if (phase !== "guess") return;
     const next = [...guesses, word];
@@ -97,38 +106,49 @@ export default function Race(props: Props) {
   if (phase !== "done") {
     const g = phase === "reveal" ? grades[r] : null;
     const round = sentence.rounds[r];
+    const said = !g ? "" : [
+      g.youRight ? `Right. The word was ${sentence.truth[r]}.` : `Not quite. You picked ${g.guess}. The word was ${sentence.truth[r]}.`,
+      g.machineRight ? `The AI got it too. It was ${pct(g.machineP)} sure.` : `The AI guessed ${g.machineWord}. It was ${pct(g.machineP)} sure.`,
+    ].join(" ");
     return (
       <section className="stack">
+        <h1 className="sr-only">{practice ? "Practice race" : "Today's race"}</h1>
+        <p className="sr-only" role="status">{said}</p>
         <div className="race-top">
           <button className="link back" onClick={onHome}>Home</button>
           <div className="dots" role="img" aria-label={`Word ${r + 1} of 5`}>
             {[0, 1, 2, 3, 4].map((i) => <i key={i} className={i < grades.length ? (grades[i].youRight ? "got" : "missed") : i === r ? "now" : ""} />)}
           </div>
-          <div className="scores" aria-label={`You ${you}, AI ${machine}`}>
+          <div className="scores" role="img" aria-label={`Score, you ${you}, AI ${machine}`}>
             <span className="you-score">You <b>{you}</b></span>
             <span className="ai-score"><Bot size={24} mood={g ? (g.machineRight ? "happy" : "oops") : "thinking"} />AI <b>{machine}</b></span>
           </div>
         </div>
         {r === 0 && !g && !practice && crowd && <p className="team-line"><i className="live-dot" />{teamLine(crowd, machineToday)}</p>}
-        <p className="story card">
+        <p ref={story} tabIndex={-1} className="story card">
           {sentence.opening}{" "}{sentence.truth.slice(0, r).join(" ")}{r > 0 ? " " : ""}
-          {g ? <span className="filled">{sentence.truth[r]}</span> : <span className="gap">?</span>}
+          {g ? <span className="filled">{sentence.truth[r]}</span> : <Gap />}
           {g && r === 4 ? sentence.end : ""}
         </p>
         <p className="ask">{g ? (g.youRight ? "You got it!" : "Not quite!") : "Which word comes next?"}</p>
         <div className="choices">
           {options.map((w, i) => {
-            const state = !g ? "" : normalise(w) === normalise(sentence.truth[r]) ? "right" : normalise(w) === normalise(g.guess) ? "wrong" : "dim";
+            const real = !!g && normalise(w) === normalise(sentence.truth[r]);
+            const mine = !!g && normalise(w) === normalise(g.guess);
+            const state = !g ? "" : real ? "right" : mine ? "wrong" : "dim";
             return (
               <button key={w} className={`choice ${state}`.trim()} disabled={!!g} onClick={() => pick(w)} aria-keyshortcuts={String(i + 1)}>
+                {(real || mine) && <Mark ok={real} />}
                 {w}
+                {(real || mine) && <span className="sr-only">{real && mine ? ", the real word and your pick" : real ? ", the real word" : ", your pick"}</span>}
                 {g && normalise(w) === normalise(g.machineWord) && <span className="who">AI's pick</span>}
               </button>
             );
           })}
         </div>
+        {r === 0 && !g && <p className="kbd-tip">You can press 1, 2, 3 or 4 to pick a word.</p>}
         {g && (
-          <div ref={feedback} className={`card feedback ${g.youRight ? "yay" : "nope"}`} aria-live="polite">
+          <div ref={feedback} className={`card feedback ${g.youRight ? "yay" : "nope"}`}>
             <div className="fb-ai">
               <Bot size={36} mood={g.machineRight ? "happy" : "oops"} />
               <strong>{g.machineRight ? "The AI got it too." : `The AI guessed ${q(g.machineWord)}.`}</strong>
@@ -157,17 +177,20 @@ export default function Race(props: Props) {
   return (
     <section className="stack">
       <div className="card result-card">
-        <p className="kicker">{practice ? "Practice round" : `Today's race, day ${day}`}</p>
+        <h1 ref={heading} tabIndex={-1} className="kicker">{practice ? "Practice round" : `Today's race, day ${day}`}</h1>
         <div className="final">
           <div className="side"><span>You</span><b className="you-t">{you}</b></div>
           <p className="verdict-big">{you > machine ? "You win!" : you === machine ? "It is a draw" : "The AI wins"}</p>
-          <div className="side"><Bot size={30} mood={machine > you ? "happy" : "oops"} /><b className="ai-t">{machine}</b></div>
+          <div className="side"><Bot size={30} mood={machine > you ? "happy" : "oops"} /><span className="sr-only">AI</span><b className="ai-t">{machine}</b></div>
         </div>
         <p className="story small">
           {sentence.opening}{" "}{sentence.truth.map((w, i) => <span key={i}><span className={`mk ${mark(i)}`}>{w}</span>{i < 4 ? " " : ""}</span>)}{sentence.end}
         </p>
-        <p className="legend"><span className="mk you">you got it</span><span className="mk ai">AI got it</span><span className="mk both">both</span></p>
+        <p className="legend" aria-hidden="true"><span className="mk you">you got it</span><span className="mk ai">AI got it</span><span className="mk both">both</span></p>
         <p className="grid" aria-hidden="true">{grades.map(square).join("")}</p>
+        <ol className="sr-only">
+          {grades.map((x, i) => <li key={i}>{sentence.truth[i]}. {x.youRight ? "You got it." : "You missed it."} {x.machineRight ? "The AI got it." : "The AI missed it."}</li>)}
+        </ol>
         {title && (
           <button className="wear" onClick={onTitles} aria-label={`Wearing ${title.name}. See your titles`}>
             <Emblem id={title.id} rarity={title.rarity} earned size={30} />

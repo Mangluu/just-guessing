@@ -13,8 +13,8 @@ export default function Titles({ store, onWear, onPlay }: Props) {
   return (
     <article className="cabinet">
       <header className="cab-head">
-        <p className="label">Your titles</p>
-        <h1 className="cab-count"><span>{earned}</span> of {TITLES.length}</h1>
+        <h1 className="kicker">Your titles</h1>
+        <p className="cab-count"><span>{earned}</span> of {TITLES.length}</p>
         <div className="cab-bar" style={{ gridTemplateColumns: `repeat(${TITLES.length}, 1fr)` }} aria-hidden="true">
           {TITLES.map((t) => <i key={t.id} className={store.titles[t.id] ? t.rarity : ""} />)}
         </div>

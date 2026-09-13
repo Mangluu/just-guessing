@@ -6,6 +6,7 @@ import type { Prediction, WordProb } from "../engine/core.ts";
 import { predictLive, useEngine } from "../engine/client.ts";
 import Bot from "./Bot.tsx";
 import Loading from "./Loading.tsx";
+import { Gap } from "./Mark.tsx";
 
 const openings = (raceData as RaceData).sentences.map((s) => s.opening);
 const PICKS = 5;
@@ -36,7 +37,7 @@ export default function Steer({ onReceipt, onHome }: Props) {
   const ready = engine.phase === "ready";
   const done = picks.length >= PICKS;
   const context = [opening, ...picks.map((x) => x.w)].join(" ");
-  const reported = useRef(false);
+  const reported = useRef(false), story = useRef<HTMLParagraphElement>(null), moved = useRef(false);
 
   useEffect(() => {
     if (!ready || done) return;
@@ -70,13 +71,19 @@ export default function Steer({ onReceipt, onHome }: Props) {
     onReceipt(picks.map((x) => x.rank), picks.reduce((a, x) => a * x.p, 1));
   }, [done]);
 
+  // After each word, focus returns to the sentence, so keyboard and screen reader users keep their place.
+  useEffect(() => {
+    if (!moved.current) { moved.current = true; return; }
+    story.current?.focus();
+  }, [picks.length, opening]);
+
   useEffect(() => { if (!toast) return; const t = setTimeout(() => setToast(""), 1800); return () => clearTimeout(t); }, [toast]);
 
   const top = (
     <div className="mode-top">
       <button className="link back" onClick={onHome}>Home</button>
       <h1>Build a sentence</h1>
-      <span className="count">{Math.min(picks.length, PICKS)}/{PICKS}</span>
+      <span className="count"><span className="sr-only">Words picked </span>{Math.min(picks.length, PICKS)}/{PICKS}</span>
     </div>
   );
 
@@ -86,7 +93,8 @@ export default function Steer({ onReceipt, onHome }: Props) {
     return (
       <section className="stack">
         {top}
-        <p className="story card">{context} <span className="gap">?</span></p>
+        <p className="sr-only" role="status">{pred ? `Pick word ${picks.length + 1} of ${PICKS}.${pred.words[0] ? ` The AI's favourite is ${pred.words[0].w}.` : ""}` : ""}</p>
+        <p ref={story} tabIndex={-1} className="story card">{context} <Gap /></p>
         <p className="ask">{picks.length === 0 ? "Pick the next word. Try a surprise!" : "Keep going. Every word changes the AI's list."}</p>
         {pred ? (
           <div className="picks">
@@ -123,9 +131,10 @@ export default function Steer({ onReceipt, onHome }: Props) {
   return (
     <section className="stack">
       {top}
+      <p className="sr-only" role="status">{`Your sentence is done. The chance the AI writes exactly this is ${oneIn(odds)}.`}</p>
       <div className="card receipt">
         <p className="kicker">Your five words</p>
-        <p className="story small">{sentence}</p>
+        <p ref={story} tabIndex={-1} className="story small">{sentence}</p>
         <ol className="rlines">{picks.map((x, i) => <li key={i}><span>{x.w}</span><span>{pct(x.p)}</span></li>)}</ol>
         <p className="kicker">Chance the AI writes exactly this</p>
         <p className="odds-big">{oneIn(odds)}</p>

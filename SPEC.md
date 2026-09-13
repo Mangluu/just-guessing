@@ -370,7 +370,7 @@ A single scrolling page, reachable from the done card and a small `?` in the top
 5. **why a small model** — big models do the same thing and hide it better. A small one is honest enough to watch.
 6. **why Finnish** — the Baltic Sea region speaks many small languages, and models are measurably worse in them. The Break probes make that visible in one tap.
 7. **what you found** — the player's discoveries and titles, from the store.
-8. **credits** — SmolLM2 by Hugging Face (Apache 2.0), Transformers.js, built for the BSRYF AI Working Group application, by Shivang Gupta.
+8. **credits** — SmolLM2 by Hugging Face (Apache 2.0), Transformers.js, by Shivang Gupta.
 
 Citations (verified URLs):
 - Chen, A. and Pu, I. (2026). Using Games to Learn How Large Language Models Work. arXiv. https://arxiv.org/html/2603.28374
@@ -471,7 +471,7 @@ Stretch, only after all six rows above are done: humans vs machine counter (§6.
 
 ## 12. README contents
 
-Name, one paragraph from §0, the live URL, how to run locally (`npm i && npm run dev`), how it works (three sentences on Transformers.js and the model), credits (SmolLM2 Apache 2.0, Transformers.js, Chen and Pu for the game idea), the privacy line, and a short "decisions" section pointing to the Why page. Built by Shivang Gupta for the BSRYF AI Working Group application, September 2026.
+Name, one paragraph from §0, the live URL, how to run locally (`npm i && npm run dev`), how it works (three sentences on Transformers.js and the model), credits (SmolLM2 Apache 2.0, Transformers.js, Chen and Pu for the game idea), the privacy line, and a short "decisions" section pointing to the Why page. Built by Shivang Gupta, September 2026.
 
 ## 13. Open decisions, with defaults
 

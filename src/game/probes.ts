@@ -2,13 +2,13 @@
 // knows by heart, an idiom it gets wrong, a city it misplaces, a country that
 // does not exist, and the region's own languages, where it is close to blind.
 export default [
-  { label: "Fairy tale", prompt: "Once upon a" },
-  { label: "Early bird", prompt: "The early bird catches the" },
-  { label: "Tampere", prompt: "Tampere is a city in" },
-  { label: "Wakanda", prompt: "The capital city of Wakanda is called" },
-  { label: "Suomi", prompt: "Suomen pääkaupunki on" },
-  { label: "Eesti", prompt: "Eesti pealinn on" },
-  { label: "Latvija", prompt: "Latvijas galvaspilsēta ir" },
-  { label: "Lietuva", prompt: "Lietuvos sostinė yra" },
-  { label: "Sverige", prompt: "Sveriges huvudstad är" },
+  { label: "Fairy tale", prompt: "Once upon a" , lang: "en" },
+  { label: "Early bird", prompt: "The early bird catches the" , lang: "en" },
+  { label: "Tampere", prompt: "Tampere is a city in" , lang: "en" },
+  { label: "Wakanda", prompt: "The capital city of Wakanda is called" , lang: "en" },
+  { label: "Suomi", prompt: "Suomen pääkaupunki on" , lang: "fi" },
+  { label: "Eesti", prompt: "Eesti pealinn on" , lang: "et" },
+  { label: "Latvija", prompt: "Latvijas galvaspilsēta ir" , lang: "lv" },
+  { label: "Lietuva", prompt: "Lietuvos sostinė yra" , lang: "lt" },
+  { label: "Sverige", prompt: "Sveriges huvudstad är" , lang: "sv" },
 ];

@@ -30,11 +30,12 @@ export default function Loading({ state }: { state: EngineState }) {
   const total = Math.max(state.total, expected);
   const mb = (b: number) => Math.round(b / 1e6);
   const warming = state.phase === "warming";
+  const done = warming ? 100 : Math.min(100, (100 * state.loaded) / total);
   return (
     <section className="screen loading" aria-live="polite">
       <p className="label">{warming ? "Waking the AI up" : "Downloading the AI"}</p>
       <p className="load-count"><span className="big">{mb(warming ? total : state.loaded)}</span> of {mb(total)} MB</p>
-      <div className="load-bar"><span style={{ width: `${warming ? 100 : Math.min(100, (100 * state.loaded) / total)}%` }} /></div>
+      <div className="load-bar" role="progressbar" aria-label="Download progress" aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(done)}><span style={{ width: `${done}%` }} /></div>
       <p className="load-line" key={i}>{LINES[i]}</p>
       {state.device === "wasm" && <p className="small">No graphics card access here, so it runs on the processor and thinks more slowly.</p>}
     </section>

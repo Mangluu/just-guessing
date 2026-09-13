@@ -30,12 +30,16 @@ export default function Why({ onPlay }: { onPlay: () => void }) {
         <p>SmolLM2 was built to understand and write mostly English. Ask it something in Finnish or Estonian and it goes from choosing between a handful of options to choosing between hundreds. The languages of the Baltic Sea region are close to invisible to it. That gap is worth talking about.</p>
       </section>
       <section>
+        <h2>Made for everyone</h2>
+        <p>It works in light and dark mode, and with only a keyboard. It is built for screen readers too, so each result is read out as it happens. Right and wrong answers show a tick or a cross as well as a colour, so colour blind players can follow along. Animations turn off when a device asks for less motion.</p>
+      </section>
+      <section>
         <h2>The live count</h2>
-        <p>When you finish the daily race, your result joins a public count of humans against the AI. Only whether each word was right or wrong is sent, never the words you typed. Practice races are not counted.</p>
+        <p>When you finish the daily race, your result joins a public count of humans against the AI. Only whether each word was right or wrong is sent, never the words you picked. Practice races are not counted.</p>
       </section>
       <section>
         <h2>Credits</h2>
-        <p>Made by Shivang Gupta as part of an application to the BSRYF AI Working Group. Allison Chen and Isabella Pu proposed a game in 2026 where a player and a computer take turns choosing words from a list of odds. This builds on that idea with a real model.</p>
+        <p>Made by Shivang Gupta. Allison Chen and Isabella Pu proposed a game in 2026 where a player and a computer take turns choosing words from a list of odds. This builds on that idea with a real model.</p>
         <ol>
           <li><a href="https://www.pewresearch.org/internet/2026/02/24/how-teens-use-and-view-ai/" target="_blank" rel="noreferrer">Pew Research Center, How Teens Use and View AI, 2026</a></li>
           <li><a href="https://arxiv.org/abs/2404.14511" target="_blank" rel="noreferrer">Children’s Overtrust and Shifting Perspectives of Generative AI, arXiv</a></li>

@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState, type CSSProperties } from "react"
 import { RARITY_LABEL, type TitleDef } from "../game/titles.ts";
 import Emblem from "./Emblem.tsx";
 
-const COLORS = ["var(--both)", "var(--you)", "var(--mach-deep)", "var(--ink)"];
+const COLORS = ["var(--gold)", "var(--you)", "var(--ai)", "var(--good)"];
 
 // Squares, not streamers: the same squares as the share grid.
 function Confetti() {
@@ -21,29 +21,39 @@ function Confetti() {
 
 type Props = { queue: TitleDef[]; wearing: string | null; onWear: (id: string) => void; onDone: () => void };
 
+// A native modal dialog: it keeps focus inside, makes the page behind it
+// inert for screen readers, and closes on Escape without any extra code.
 export default function TitleSheet({ queue, wearing, onWear, onDone }: Props) {
-  const [i, setI] = useState(0);
+  const dialog = useRef<HTMLDialogElement>(null);
   const primary = useRef<HTMLButtonElement>(null);
+  const [i, setI] = useState(0);
   const t = queue[i];
+
+  useEffect(() => {
+    const d = dialog.current;
+    if (d && !d.open) d.showModal();
+  }, []);
 
   useEffect(() => {
     primary.current?.focus();
     if (t) navigator.vibrate?.(t.rarity === "legendary" ? [18, 50, 18] : 22);
   }, [t]);
 
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") onDone(); };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [onDone]);
-
   if (!t) return null;
   const last = i >= queue.length - 1;
-  const next = () => (last ? onDone() : setI(i + 1));
+  const close = () => dialog.current?.close();
+  const next = () => (last ? close() : setI(i + 1));
 
   return (
-    <div className="sheet-backdrop" onClick={onDone}>
-      <div key={t.id} className={`sheet ${t.rarity}`} role="dialog" aria-modal="true" aria-labelledby="sheet-name" onClick={(e) => e.stopPropagation()}>
+    <dialog
+      ref={dialog}
+      className={`sheet ${t.rarity}`}
+      aria-labelledby="sheet-name"
+      onClose={onDone}
+      onKeyDown={(e) => { if (e.key === "Escape") { e.preventDefault(); close(); } }}
+      onClick={(e) => { if (e.target === dialog.current) close(); }}
+    >
+      <div className="sheet-inner" key={t.id}>
         {t.rarity === "legendary" && <Confetti />}
         <p className="sheet-kicker">{queue.length > 1 ? `Title unlocked, ${i + 1} of ${queue.length}` : "Title unlocked"}</p>
         <Emblem id={t.id} rarity={t.rarity} earned size={96} animate />
@@ -52,9 +62,9 @@ export default function TitleSheet({ queue, wearing, onWear, onDone }: Props) {
         <p className="sheet-lesson">{t.lesson}</p>
         <div className="actions">
           <button ref={primary} className="btn" onClick={() => { onWear(t.id); next(); }}>{wearing === t.id ? "Wearing it" : "Wear it"}</button>
-          <button className="btn ghost" onClick={next}>{last ? "Keep playing" : "Next title"}</button>
+          <button className="btn quiet" onClick={next}>{last ? "Keep playing" : "Next title"}</button>
         </div>
       </div>
-    </div>
+    </dialog>
   );
 }
