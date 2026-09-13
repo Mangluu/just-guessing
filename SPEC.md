@@ -365,7 +365,7 @@ If enabled: on race completion, if `store.optInTally`, `POST /api/tally` with `{
 A single scrolling page, reachable from the done card and a small `?` in the top bar. Sections, in order:
 1. **what this is** — three sentences. "It does not look things up. It guesses the next word from a list with odds, every time. It is just as fluent when it is guessing as when it is sure."
 2. **why a game** — Chen and Pu proposed "Tag-Team Text Generation" in March 2026 as a way to learn how LLMs work, as an idea, with no implementation. This is that idea, built. Link.
-3. **why it matters for people under 30** — Pew, February 2026: 57% of US teens use chatbots to search for information, 54% for schoolwork, about three in ten daily. A 2026 study found students believe ChatGPT draws on vetted sources. A study of middle school girls found overtrust, and that seeing the model's mistakes is what shifted it.
+3. **why it matters for people under 30** — Pew, February 2026: 57% of US teens use chatbots to search for information, 54% for schoolwork, about three in ten daily. A study of middle school girls found overtrust, and that seeing the model's mistakes is what shifted it.
 4. **why it runs in your browser** — nothing you type leaves the device, it works offline, it costs nothing to keep online, and the download counter is itself the lesson.
 5. **why a small model** — big models do the same thing and hide it better. A small one is honest enough to watch.
 6. **why Finnish** — the Baltic Sea region speaks many small languages, and models are measurably worse in them. The Break probes make that visible in one tap.
@@ -375,7 +375,6 @@ A single scrolling page, reachable from the done card and a small `?` in the top
 Citations (verified URLs):
 - Chen, A. and Pu, I. (2026). Using Games to Learn How Large Language Models Work. arXiv. https://arxiv.org/html/2603.28374
 - Pew Research Center (2026). How Teens Use and View AI. https://www.pewresearch.org/internet/2026/02/24/how-teens-use-and-view-ai/
-- Exploring students' (mis)conceptions about ChatGPT-generated text (2026). Education and Information Technologies. https://link.springer.com/article/10.1007/s10639-026-13938-w
 - Children's Overtrust and Shifting Perspectives of Generative AI. arXiv. https://arxiv.org/abs/2404.14511
 - Language models are better than humans at next-token prediction. arXiv. https://arxiv.org/pdf/2212.11281
 
