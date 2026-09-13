@@ -10,7 +10,7 @@ export function classify(s: string, special = false): number {
   if (special || s === "") return SPECIAL;
   if (/^\s/.test(s)) return /^\s+[\p{L}\p{N}\p{M}�]/u.test(s) ? START : BREAK;
   // letters with no leading space glue onto the current word, as do byte
-  // fragments of a multi-byte character and contractions like "'t"
-  if (/^[\p{L}\p{N}\p{M}�]/u.test(s) || /^['’]\p{L}/u.test(s)) return CONT;
+  // fragments of a multi-byte character, and apostrophes, so "don't" and "o'clock" stay whole
+  if (/^[\p{L}\p{N}\p{M}�]/u.test(s) || /^['’](\p{L}|$)/u.test(s)) return CONT;
   return BREAK;
 }

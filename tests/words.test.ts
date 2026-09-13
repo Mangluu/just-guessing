@@ -15,6 +15,7 @@ test("tokens are sorted by how they sit against word boundaries", () => {
   assert.equal(classify(" �"), START);
   assert.equal(classify("anda"), CONT);
   assert.equal(classify("'t"), CONT);
+  assert.equal(classify("'"), CONT);
   assert.equal(classify("�"), CONT);
   assert.equal(classify("\n"), BREAK);
   assert.equal(classify(" ("), BREAK);

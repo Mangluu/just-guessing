@@ -1,0 +1,45 @@
+export default function Why({ onPlay }: { onPlay: () => void }) {
+  return (
+    <article className="why">
+      <h1>A game about odds, not answers</h1>
+      <section>
+        <h2>What it is</h2>
+        <p>Every day there is one sentence with its last five words hidden. You and a small language model both guess them, one word at a time. After each guess you see every word the machine was weighing up, and how likely it thought each one was.</p>
+      </section>
+      <section>
+        <h2>What it shows</h2>
+        <p>A language model does not look anything up. At every step it scores every word and word piece it knows, then picks from that list. It sounds just as sure when it is guessing as when it is right. Chatbots never show you those odds. This does.</p>
+      </section>
+      <section>
+        <h2>Why a game</h2>
+        <p>Young people use chatbots to find things out. In a Pew survey of US teenagers in late 2025, 57 percent said they use them to search for information and 54 percent use them for schoolwork.</p>
+        <p>A study with middle school girls found they started out overtrusting generative AI, and that seeing its limits and mistakes for themselves is what changed that. So this does not lecture. It lets you watch the machine guess, lose to it, and sometimes beat it.</p>
+      </section>
+      <section>
+        <h2>How it works</h2>
+        <p>The model is SmolLM2, a small open model from Hugging Face with 135 million parameters. The daily race was computed ahead of time at full precision, so everyone gets the same sentence and the same odds without downloading anything.</p>
+        <p>Steer it and Break it run the same model live, inside your browser. It downloads once, between 118 and 182 megabytes depending on your browser, and nothing you type leaves your device. That copy is squeezed to 4 bits so it fits, which makes its guesses a little blurrier than the race.</p>
+      </section>
+      <section>
+        <h2>Why a small model</h2>
+        <p>The chatbots you use do the same thing, one word at a time. They are far bigger, far better trained, and they hide the odds. A small model is honest enough to watch.</p>
+      </section>
+      <section>
+        <h2>Why your language</h2>
+        <p>SmolLM2 was built to understand and write mostly English. Ask it something in Finnish or Estonian and it goes from choosing between a handful of options to choosing between hundreds. The languages of the Baltic Sea region are close to invisible to it. That gap is worth talking about.</p>
+      </section>
+      <section>
+        <h2>Credits</h2>
+        <p>Made by Shivang Gupta as part of an application to the BSRYF AI Working Group. Allison Chen and Isabella Pu proposed a game in 2026 where a player and a computer take turns choosing words from a list of odds. This builds on that idea with a real model.</p>
+        <ol>
+          <li><a href="https://www.pewresearch.org/internet/2026/02/24/how-teens-use-and-view-ai/" target="_blank" rel="noreferrer">Pew Research Center, How Teens Use and View AI, 2026</a></li>
+          <li><a href="https://arxiv.org/abs/2404.14511" target="_blank" rel="noreferrer">Children’s Overtrust and Shifting Perspectives of Generative AI, arXiv</a></li>
+          <li><a href="https://arxiv.org/html/2603.28374" target="_blank" rel="noreferrer">Chen and Pu, Using Games to Learn How Large Language Models Work, arXiv, 2026</a></li>
+          <li><a href="https://huggingface.co/HuggingFaceTB/SmolLM2-135M" target="_blank" rel="noreferrer">SmolLM2-135M by Hugging Face, Apache 2.0</a></li>
+          <li><a href="https://github.com/huggingface/transformers.js" target="_blank" rel="noreferrer">Transformers.js</a></li>
+        </ol>
+      </section>
+      <button className="btn wide" onClick={onPlay}>Back to the game</button>
+    </article>
+  );
+}

@@ -4,7 +4,7 @@ import { AutoTokenizer, AutoModelForCausalLM, env } from "@huggingface/transform
 import { makeEngine, predict, wordProb, continueText } from "../src/engine/core.ts";
 
 env.cacheDir = ".model-cache/";
-const dtype = process.argv[2] ?? "q4";
+const dtype = (process.argv[2] ?? "q4") as "q4" | "q4f16" | "fp16" | "fp32";
 const ID = "onnx-community/SmolLM2-135M-ONNX";
 const tok = await AutoTokenizer.from_pretrained(ID);
 const model = await AutoModelForCausalLM.from_pretrained(ID, { dtype, device: "cpu" });

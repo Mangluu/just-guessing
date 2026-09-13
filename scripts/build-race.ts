@@ -92,6 +92,18 @@ for (const r of rows) {
 let seed = 20260913;
 const rand = () => ((seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0) / 2 ** 32);
 const ship = rows.slice(0, COUNT).map((r) => ({ r, k: rand() })).sort((a, b) => a.k - b.k).map(({ r }) => r);
+// Players meet these one day at a time, so neither a topic nor an ending should
+// land on two days in a row. Swap a repeat with the next sentence that differs.
+const TOPICS = ["library", "ferry", "chatbot", "grandmother", "grandfather", "bakery", "museum", "concert", "snow", "exam", "sauna", "flight"];
+const topic = (r: { line: string }) => TOPICS.find((t) => r.line.toLowerCase().includes(t)) ?? r.line;
+const ending = (r: { truth: string[] }) => r.truth.slice(-2).join(" ").toLowerCase();
+const clash = (a: { line: string; truth: string[] }, b: { line: string; truth: string[] }) =>
+  topic(a) === topic(b) || ending(a) === ending(b);
+for (let i = 1; i < ship.length; i++) {
+  if (!clash(ship[i], ship[i - 1])) continue;
+  const j = ship.findIndex((r, k) => k > i && !clash(r, ship[i - 1]));
+  if (j > i) [ship[i], ship[j]] = [ship[j], ship[i]];
+}
 mkdirSync("src/data", { recursive: true });
 writeFileSync("src/data/race.json", JSON.stringify({
   model: "SmolLM2-135M",

@@ -7,4 +7,6 @@ export default defineConfig({
   plugins: [react()],
   worker: { format: "es" },
   optimizeDeps: { exclude: ["@huggingface/transformers"] },
+  // the main chunk carries the whole precomputed race, about 100 KB gzipped
+  build: { chunkSizeWarningLimit: 1200 },
 });
