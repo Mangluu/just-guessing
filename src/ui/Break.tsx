@@ -1,20 +1,14 @@
-import { useState, type FormEvent } from "react";
+import { useLayoutEffect, useRef, useState, type FormEvent } from "react";
+import { animate } from "animejs";
 import type { Prediction } from "../engine/core.ts";
 import { predictLive, useEngine, writeOn } from "../engine/client.ts";
 import { pct } from "../game/scoring.ts";
 import probes from "../game/probes.ts";
-import Bot, { type Mood } from "./Bot.tsx";
+import Bot from "./Bot.tsx";
+import Guesses, { feel } from "./Guesses.tsx";
 import Loading from "./Loading.tsx";
-import Odds from "./Odds.tsx";
 import { Gap } from "./Mark.tsx";
-
-// How many words it is really choosing between, read as a feeling a kid can see.
-function feel(n: number): { text: string; mood: Mood } {
-  if (n <= 5) return { text: "It is sure", mood: "happy" };
-  if (n <= 50) return { text: "It is fairly sure", mood: "idle" };
-  if (n <= 300) return { text: "It is guessing", mood: "lost" };
-  return { text: "It is lost", mood: "oops" };
-}
+import { calm, CountUp } from "./Motion.tsx";
 
 type Props = { onAnswer: (prompt: string, choices: number, probe: string | null) => void; onHome: () => void };
 
@@ -27,6 +21,14 @@ export default function Break({ onAnswer, onHome }: Props) {
   const [writes, setWrites] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
+  const knob = useRef<HTMLElement>(null);
+
+  // when an answer lands, the needle swings out from sure and settles on how lost the AI is
+  useLayoutEffect(() => {
+    if (!pred || !knob.current || calm()) return;
+    const a = animate(knob.current, { left: { from: "0%" }, duration: 1200, ease: "outElastic(1, .8)" });
+    return () => { a.revert(); };
+  }, [pred]);
 
   async function ask(prompt: string, probe: string | null) {
     const clean = prompt.trim().replace(/\s+/g, " ");
@@ -87,12 +89,12 @@ export default function Break({ onAnswer, onHome }: Props) {
                 <Bot size={56} mood={f.mood} />
                 <div>
                   <p className="sure-big">{f.text}</p>
-                  <p className="muted">Choosing between {words}</p>
+                  <p className="muted">Choosing between <CountUp value={n} /> {n === 1 ? "word" : "words"}</p>
                 </div>
               </div>
-              <div className="meter-bar" role="img" aria-label={`${f.text}. About ${words}, on a scale from sure to lost`}><i style={{ left: `${x * 100}%` }} /></div>
+              <div className="meter-bar" role="img" aria-label={`${f.text}. About ${words}, on a scale from sure to lost`}><i ref={knob} style={{ left: `${x * 100}%` }} /></div>
               <div className="meter-ends" aria-hidden="true"><span>Sure</span><span>Lost</span></div>
-              <Odds words={pred.words.map((w) => [w.w, w.p] as [string, number])} />
+              <Guesses words={pred.words.map((w) => [w.w, w.p] as [string, number])} />
             </>
           ) : (
             <div className="thinking-row"><Bot size={40} mood="thinking" /><span>The AI is thinking</span></div>

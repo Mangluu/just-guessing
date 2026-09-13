@@ -2,8 +2,10 @@ import { useEffect, useRef, useState } from "react";
 import { SURE, GUESSING, YOUR_TURN } from "../data/tutorial.ts";
 import { pct } from "../game/scoring.ts";
 import Bot from "./Bot.tsx";
-import Odds from "./Odds.tsx";
-import Mark, { Gap } from "./Mark.tsx";
+import Choices from "./Choices.tsx";
+import Guesses from "./Guesses.tsx";
+import { Gap } from "./Mark.tsx";
+import Verdict from "./Verdict.tsx";
 
 const ORDER = ["rabbit", "cat", "man", "dog"];
 const TOTAL = 5;
@@ -13,6 +15,7 @@ export default function Intro({ onDone }: { onDone: (next: "race" | "home") => v
   const [picked, setPicked] = useState<string | null>(null);
   const body = useRef<HTMLDivElement>(null);
   const next = () => setStep((s) => s + 1);
+  const aiWord = YOUR_TURN.words[0][0];
 
   // each step starts at its heading, so keyboard and screen reader users are not left behind
   useEffect(() => {
@@ -31,14 +34,14 @@ export default function Intro({ onDone }: { onDone: (next: "race" | "home") => v
     <>
       <h1>It gives every word a score</h1>
       <p className="story card">{SURE.prompt} <Gap /></p>
-      <Odds words={SURE.words} />
+      <Guesses words={SURE.words} />
       <p className="say">The AI has read so many messages that it is almost sure the next word is “much”.</p>
       <div className="push"><button className="btn wide" onClick={next}>Next</button></div>
     </>,
     <>
       <h1>But often it is just guessing</h1>
       <p className="story card">{GUESSING.prompt} <Gap /></p>
-      <Odds words={GUESSING.words} />
+      <Guesses words={GUESSING.words} />
       <p className="bubble">Hundreds of words could fit, so no word gets a big score. It still picks one, and it sounds just as sure.</p>
       <div className="push"><button className="btn wide" onClick={next}>Next</button></div>
     </>,
@@ -47,25 +50,13 @@ export default function Intro({ onDone }: { onDone: (next: "race" | "home") => v
       <p className="story card">
         {YOUR_TURN.prompt} {picked ? <span className="filled">{YOUR_TURN.truth}</span> : <Gap />}
       </p>
-      <p className="say" aria-live="polite">{picked ? (picked === YOUR_TURN.truth ? "Yes, it was cat." : `Not quite, it was cat. You picked ${picked}.`) : "Which word comes next? Tap one."}</p>
-      <div className="choices">
-        {ORDER.map((w) => {
-          const real = !!picked && w === YOUR_TURN.truth;
-          const mine = !!picked && w === picked;
-          const state = !picked ? "" : real ? "right" : mine ? "wrong" : "dim";
-          return (
-            <button key={w} className={`choice ${state}`.trim()} disabled={!!picked} onClick={() => setPicked(w)}>
-              {(real || mine) && <Mark ok={real} />}
-              {w}
-              {picked && w === YOUR_TURN.words[0][0] && <span className="who">AI's pick</span>}
-            </button>
-          );
-        })}
-      </div>
+      <p className={picked ? "sr-only" : "say"} aria-live="polite">{picked ? (picked === YOUR_TURN.truth ? "Yes, it was cat." : `Not quite, it was cat. You picked ${picked}.`) : "Which word comes next? Tap one."}</p>
+      <Choices options={ORDER} reveal={picked ? { real: YOUR_TURN.truth, you: picked, ai: aiWord } : null} onPick={setPicked} />
       {picked && (
         <>
-          <Odds words={YOUR_TURN.words} real={YOUR_TURN.truth} />
-          <p className="say">The AI liked “cat” best too, but it was only {pct(YOUR_TURN.words[0][1])} sure. It was choosing between {YOUR_TURN.choices} words.</p>
+          <Verdict inline youRight={picked === YOUR_TURN.truth} aiRight={aiWord === YOUR_TURN.truth} truth={YOUR_TURN.truth} aiWord={aiWord} />
+          <Guesses words={YOUR_TURN.words} real={YOUR_TURN.truth} you={picked} delay={400} />
+          <p className="say">The AI liked “cat” best, but it was only {pct(YOUR_TURN.words[0][1])} sure. It was choosing between {YOUR_TURN.choices} words.</p>
         </>
       )}
       <div className="push">{picked && <button className="btn wide" onClick={next} autoFocus>Next</button>}</div>

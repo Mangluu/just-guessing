@@ -5,7 +5,7 @@ export default function Why({ onPlay }: { onPlay: () => void }) {
       <h1>A game about odds, not answers</h1>
       <section>
         <h2>What it is</h2>
-        <p>Every day there is one sentence with its last five words hidden. You and a small language model both guess them, one word at a time. After each guess you see every word the AI was weighing up, and how likely it thought each one was.</p>
+        <p>Every day there is one sentence with its last five words hidden. You and a small language model both guess them, one word at a time. After each guess you see what the AI would say if it guessed 100 times, drawn as 100 little squares. A sure AI fills them with one colour. A guessing AI leaves most of them grey.</p>
       </section>
       <section>
         <h2>What it shows</h2>
@@ -39,13 +39,14 @@ export default function Why({ onPlay }: { onPlay: () => void }) {
       </section>
       <section>
         <h2>Credits</h2>
-        <p>Made by Shivang Gupta. Allison Chen and Isabella Pu proposed a game in 2026 where a player and a computer take turns choosing words from a list of odds. This builds on that idea with a real model.</p>
+        <p>Made by <a href="https://github.com/Mangluu" target="_blank" rel="noreferrer">Shivang Gupta</a>. <a href="https://arxiv.org/abs/2603.28374" target="_blank" rel="noreferrer">Allison Chen and Isabella Pu</a> proposed a game in 2026 where a player and a computer take turns choosing words from a list of odds. This builds on that idea with a real model.</p>
         <ol>
           <li><a href="https://www.pewresearch.org/internet/2026/02/24/how-teens-use-and-view-ai/" target="_blank" rel="noreferrer">Pew Research Center, How Teens Use and View AI, 2026</a></li>
           <li><a href="https://arxiv.org/abs/2404.14511" target="_blank" rel="noreferrer">Children’s Overtrust and Shifting Perspectives of Generative AI, arXiv</a></li>
           <li><a href="https://arxiv.org/html/2603.28374" target="_blank" rel="noreferrer">Chen and Pu, Using Games to Learn How Large Language Models Work, arXiv, 2026</a></li>
           <li><a href="https://huggingface.co/HuggingFaceTB/SmolLM2-135M" target="_blank" rel="noreferrer">SmolLM2-135M by Hugging Face, Apache 2.0</a></li>
           <li><a href="https://github.com/huggingface/transformers.js" target="_blank" rel="noreferrer">Transformers.js</a></li>
+          <li><a href="https://animejs.com" target="_blank" rel="noreferrer">anime.js, for the animations</a></li>
           <li><a href="https://jasoncameron.dev/abacus/" target="_blank" rel="noreferrer">Abacus, the free counting service behind the live count</a></li>
         </ol>
       </section>
