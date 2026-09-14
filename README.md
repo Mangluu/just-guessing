@@ -26,6 +26,7 @@ The first visit opens a short tutorial with five steps. Playing earns titles, 17
 - **Screen readers.** Each result is announced, and every new screen moves focus to its heading.
 - **Not only colour.** Right and wrong answers show a tick or a cross.
 - **Less motion.** Animations turn off when your device asks for reduced motion.
+- **Sound.** Soft sound effects play as you guess. Calm background music can be turned on from the speaker button in the top bar, which also turns the effects off. All of it is made in the browser, with no audio files.
 
 ## How it works
 

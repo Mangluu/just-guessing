@@ -31,7 +31,7 @@ export default function Why({ onPlay }: { onPlay: () => void }) {
       </section>
       <section>
         <h2>Made for everyone</h2>
-        <p>It works in light and dark mode, and with only a keyboard. It is built for screen readers too, so each result is read out as it happens. Right and wrong answers show a tick or a cross as well as a colour, so colour blind players can follow along. Animations turn off when a device asks for less motion.</p>
+        <p>It works in light and dark mode, and with only a keyboard. It is built for screen readers too, so each result is read out as it happens. Right and wrong answers show a tick or a cross as well as a colour, so colour blind players can follow along. Animations turn off when a device asks for less motion. Sound effects are soft and short, and music only plays if someone turns it on from the speaker button.</p>
       </section>
       <section>
         <h2>The live count</h2>

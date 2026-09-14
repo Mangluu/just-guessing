@@ -16,6 +16,7 @@ import Why from "./Why.tsx";
 import Titles from "./Titles.tsx";
 import TitleSheet from "./TitleSheet.tsx";
 import ThemeToggle from "./ThemeToggle.tsx";
+import SoundButton from "./SoundButton.tsx";
 
 const data = raceData as RaceData;
 type View = "intro" | "home" | "race" | "steer" | "break" | "titles" | "about";
@@ -102,6 +103,7 @@ export default function Shell() {
             <button className="chip-btn" onClick={() => go("titles")} aria-label={`Titles, ${earned} of ${TITLES.length} earned${unseen ? ", new ones to see" : ""}`}>
               <span className="chip-word">Titles</span> <b>{earned}/{TITLES.length}</b>{unseen && <i className="new-dot" />}
             </button>
+            <SoundButton />
             <ThemeToggle />
             <button className="chip-btn" onClick={() => go("intro")} aria-label="How to play">?</button>
           </div>

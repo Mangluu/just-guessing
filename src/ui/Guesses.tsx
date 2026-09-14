@@ -5,11 +5,11 @@ import type { Mood } from "./Bot.tsx";
 import { calm } from "./Motion.tsx";
 
 /** How many words it is really choosing between, read as a feeling a kid can see. */
-export function feel(n: number): { text: string; mood: Mood } {
-  if (n <= 5) return { text: "It is sure", mood: "happy" };
-  if (n <= 50) return { text: "It is fairly sure", mood: "idle" };
-  if (n <= 300) return { text: "It is guessing", mood: "lost" };
-  return { text: "It is lost", mood: "oops" };
+export function feel(n: number): { text: string; mood: Mood; level: "sure" | "fairly" | "guessing" | "lost" } {
+  if (n <= 5) return { text: "It is sure", mood: "happy", level: "sure" };
+  if (n <= 50) return { text: "It is fairly sure", mood: "idle", level: "fairly" };
+  if (n <= 300) return { text: "It is guessing", mood: "lost", level: "guessing" };
+  return { text: "It is lost", mood: "oops", level: "lost" };
 }
 
 const times = (count: number, p: number | null) =>

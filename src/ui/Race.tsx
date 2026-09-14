@@ -15,6 +15,7 @@ import Guesses, { feel } from "./Guesses.tsx";
 import Mark, { Gap } from "./Mark.tsx";
 import { burst, calm, CountUp } from "./Motion.tsx";
 import Verdict from "./Verdict.tsx";
+import { cue } from "./sound.ts";
 
 type Props = {
   sentence: RaceSentence; day: number; practice: boolean; initial: string[]; streak: number;
@@ -125,6 +126,9 @@ export default function Race(props: Props) {
 
   function pick(word: string) {
     if (phase !== "guess") return;
+    const g = grade(word, sentence.rounds[r], sentence.truth[r]);
+    cue(g.youRight ? (g.machineRight ? "right" : "beat") : "wrong");
+    cue(g.machineRight ? "aiRight" : "aiWrong", 0.5);
     const next = [...guesses, word];
     setGuesses(next);
     setPhase("reveal");
@@ -178,7 +182,7 @@ export default function Race(props: Props) {
             <p className="muted">{insight(g, round.effective)}</p>
           </div>
         )}
-        {g && <Verdict key={r} youRight={g.youRight} aiRight={g.machineRight} truth={sentence.truth[r]} aiWord={g.machineWord} next={r < 4 ? "Next word" : "See who won"} onNext={() => setPhase(guesses.length < 5 ? "guess" : "done")} />}
+        {g && <Verdict key={r} youRight={g.youRight} aiRight={g.machineRight} truth={sentence.truth[r]} aiWord={g.machineWord} next={r < 4 ? "Next word" : "See who won"} onNext={() => { if (guesses.length < 5) { setPhase("guess"); return; } cue(you > machine ? "win" : you === machine ? "draw" : "lose", 0.12); setPhase("done"); }} />}
       </section>
     );
   }

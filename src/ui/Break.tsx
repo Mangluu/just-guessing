@@ -9,6 +9,7 @@ import Guesses, { feel } from "./Guesses.tsx";
 import Loading from "./Loading.tsx";
 import { Gap } from "./Mark.tsx";
 import { calm, CountUp } from "./Motion.tsx";
+import { cue } from "./sound.ts";
 
 type Props = { onAnswer: (prompt: string, choices: number, probe: string | null) => void; onHome: () => void };
 
@@ -35,10 +36,12 @@ export default function Break({ onAnswer, onHome }: Props) {
     if (!clean || busy) return;
     setText(clean); setAsked(clean); setLang(probes.find((p) => p.label === probe)?.lang);
     setPred(null); setWrites(null); setError(""); setBusy(true);
+    cue("ask");
     try {
       const odds = predictLive(clean), next = writeOn(clean);
       const p = await odds;
       setPred(p);
+      cue(feel(Math.max(1, Math.round(p.effective))).level);
       onAnswer(clean, Math.round(p.effective), probe);
       setWrites(await next);
     } catch (e) {

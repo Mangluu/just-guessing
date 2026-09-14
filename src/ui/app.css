@@ -419,3 +419,18 @@ h1, h2, h3 { margin: 0; font-family: var(--display); font-weight: 600; line-heig
 main { flex: 1; display: flex; flex-direction: column; }
 h1.kicker { font-family: var(--body); line-height: 1.5; }
 ::placeholder { color: var(--ink3); opacity: 1; }
+
+/* sound */
+.icon-btn { position: relative; }
+.icon-btn .new-dot { position: absolute; top: 7px; right: 7px; }
+.sound-panel { position: fixed; inset: 66px max(18px, calc(50vw - 242px)) auto auto; width: min(300px, calc(100vw - 36px)); margin: 0; padding: 14px 16px 6px; border: 0; border-radius: 20px; background: var(--card); color: var(--ink); box-shadow: 0 1px 0 var(--line), 0 18px 40px rgba(10, 9, 20, .22); }
+.sound-panel:popover-open { animation: pop .18s ease-out; }
+.switch-row { display: flex; align-items: center; gap: 14px; min-height: 64px; cursor: pointer; }
+.switch-row + .switch-row { border-top: 2px solid var(--line); }
+.switch-row > span { display: flex; flex-direction: column; gap: 2px; margin-right: auto; }
+.switch-row strong { font: 600 1.05rem/1.2 var(--display); }
+.switch-row small { color: var(--ink2); font-size: .85rem; font-weight: 700; }
+input[role="switch"] { appearance: none; flex: none; width: 54px; height: 32px; margin: 0; border-radius: 999px; cursor: pointer;
+  background: radial-gradient(closest-side, var(--ink3) 88%, transparent) left 5px center / 22px 22px no-repeat, var(--soft); box-shadow: inset 0 0 0 2px var(--ink3); }
+input[role="switch"]:checked { background: radial-gradient(closest-side, var(--card) 88%, transparent) right 5px center / 22px 22px no-repeat, var(--good-solid); box-shadow: none; }
+@media (max-width: 400px) { .chip-btn { padding: 0 10px; } .top-actions { gap: 4px; } }

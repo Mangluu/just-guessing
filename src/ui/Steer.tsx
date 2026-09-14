@@ -7,6 +7,7 @@ import { predictLive, useEngine } from "../engine/client.ts";
 import Bot from "./Bot.tsx";
 import Loading from "./Loading.tsx";
 import { Gap } from "./Mark.tsx";
+import { cue, note } from "./sound.ts";
 
 const openings = (raceData as RaceData).sentences.map((s) => s.opening);
 const PICKS = 5;
@@ -99,7 +100,7 @@ export default function Steer({ onReceipt, onHome }: Props) {
         {pred ? (
           <div className="picks">
             {options(pred).map((o, i) => (
-              <button key={`${o.w}-${i}`} className={["pick", i === 0 && "fav", o.long && "long"].filter(Boolean).join(" ")} onClick={() => setPicks([...picks, o])}>
+              <button key={`${o.w}-${i}`} className={["pick", i === 0 && "fav", o.long && "long"].filter(Boolean).join(" ")} onClick={() => { note(picks.length, !!o.long); if (picks.length === PICKS - 1) cue("done", 0.45); setPicks([...picks, o]); }}>
                 <span className="fill" style={{ width: `${Math.max(2, o.p * 100)}%` }} />
                 <span className="pick-word">{o.w}</span>
                 {i === 0 && <span className="tag ai">AI's favourite</span>}

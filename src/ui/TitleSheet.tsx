@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
 import { RARITY_LABEL, type TitleDef } from "../game/titles.ts";
 import Emblem from "./Emblem.tsx";
+import { cue } from "./sound.ts";
 
 const COLORS = ["var(--gold)", "var(--you)", "var(--ai)", "var(--good)"];
 
@@ -36,7 +37,7 @@ export default function TitleSheet({ queue, wearing, onWear, onDone }: Props) {
 
   useEffect(() => {
     primary.current?.focus();
-    if (t) navigator.vibrate?.(t.rarity === "legendary" ? [18, 50, 18] : 22);
+    if (t) { navigator.vibrate?.(t.rarity === "legendary" ? [18, 50, 18] : 22); cue(t.rarity === "common" ? "title" : t.rarity); }
   }, [t]);
 
   if (!t) return null;

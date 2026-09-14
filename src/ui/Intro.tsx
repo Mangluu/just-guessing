@@ -6,6 +6,7 @@ import Choices from "./Choices.tsx";
 import Guesses from "./Guesses.tsx";
 import { Gap } from "./Mark.tsx";
 import Verdict from "./Verdict.tsx";
+import { cue } from "./sound.ts";
 
 const ORDER = ["rabbit", "cat", "man", "dog"];
 const TOTAL = 5;
@@ -16,6 +17,12 @@ export default function Intro({ onDone }: { onDone: (next: "race" | "home") => v
   const body = useRef<HTMLDivElement>(null);
   const next = () => setStep((s) => s + 1);
   const aiWord = YOUR_TURN.words[0][0];
+  const pickTurn = (w: string) => {
+    const right = w === YOUR_TURN.truth, aiRight = aiWord === YOUR_TURN.truth;
+    cue(right ? (aiRight ? "right" : "beat") : "wrong");
+    cue(aiRight ? "aiRight" : "aiWrong", 0.5);
+    setPicked(w);
+  };
 
   // each step starts at its heading, so keyboard and screen reader users are not left behind
   useEffect(() => {
@@ -51,7 +58,7 @@ export default function Intro({ onDone }: { onDone: (next: "race" | "home") => v
         {YOUR_TURN.prompt} {picked ? <span className="filled">{YOUR_TURN.truth}</span> : <Gap />}
       </p>
       <p className={picked ? "sr-only" : "say"} aria-live="polite">{picked ? (picked === YOUR_TURN.truth ? "Yes, it was cat." : `Not quite, it was cat. You picked ${picked}.`) : "Which word comes next? Tap one."}</p>
-      <Choices options={ORDER} reveal={picked ? { real: YOUR_TURN.truth, you: picked, ai: aiWord } : null} onPick={setPicked} />
+      <Choices options={ORDER} reveal={picked ? { real: YOUR_TURN.truth, you: picked, ai: aiWord } : null} onPick={pickTurn} />
       {picked && (
         <>
           <Verdict inline youRight={picked === YOUR_TURN.truth} aiRight={aiWord === YOUR_TURN.truth} truth={YOUR_TURN.truth} aiWord={aiWord} />
